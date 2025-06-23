@@ -14,17 +14,15 @@ public class Login extends JFrame {
 
     private final String ARCHIVO_RECORDADO = "recordado.txt";
 
-    public Login(String[] usuarios) {
+    public Login() {
         setTitle("ZManager 2.0 - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(405, 301);
         setLocationRelativeTo(null);
         setResizable(false);
-        
-        // Carga la imagen desde el classpath
-        Image icon = Toolkit.getDefaultToolkit()
-                           .getImage(getClass().getResource("/LOGOZM.png"));
-        // Fija el icono de la ventana
+
+        // Icono
+        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png"));
         setIconImage(icon);
 
         JPanel mainPanel = new JPanel();
@@ -44,12 +42,10 @@ public class Login extends JFrame {
         usuariosCombo.setBackground(Color.WHITE);
         usuariosCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         usuariosCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        usuariosCombo.addItem("Selecciona usuario...");
-        for (String usuario : usuarios) {
-            usuariosCombo.addItem(usuario);
-        }
         mainPanel.add(usuariosCombo);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        cargarUsuarios(); //
 
         txtPassword = new JPasswordField("Contraseña");
         txtPassword.setBackground(Color.WHITE);
@@ -74,7 +70,6 @@ public class Login extends JFrame {
         mainPanel.add(txtPassword);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // Checkbox "Recordar usuario"
         recordarUsuarioCheck = new JCheckBox("Recordar usuario");
         recordarUsuarioCheck.setAlignmentX(Component.CENTER_ALIGNMENT);
         recordarUsuarioCheck.setBackground(Color.WHITE);
@@ -94,11 +89,19 @@ public class Login extends JFrame {
 
         getContentPane().add(mainPanel);
 
-        cargarUsuarioRecordado(); // ⬅️ Autocargar si hay guardado
+        cargarUsuarioRecordado(); //Cargar_usuario_recordado_(si_existe)
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
+    }
+
+    private void cargarUsuarios() {
+        usuariosCombo.addItem("Selecciona usuario...");
+        String[] usuarios = {"Juan", "Pedro", "María", "Pepe"};
+        for (String usuario : usuarios) {
+            usuariosCombo.addItem(usuario);
+        }
     }
 
     public String getUsuarioSeleccionado() {
@@ -144,13 +147,11 @@ public class Login extends JFrame {
                     }
                 }
             }
-        } catch (IOException ignored) {
-            // No_hacer_nada_si_no_existe_archivo
-        }
+        } catch (IOException ignored) {}
     }
 
     private void eliminarUsuarioRecordado() {
-        java.io.File archivo = new java.io.File(ARCHIVO_RECORDADO);
+        File archivo = new File(ARCHIVO_RECORDADO);
         if (archivo.exists()) archivo.delete();
     }
 }

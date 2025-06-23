@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.FileOutputStream;
@@ -177,41 +178,60 @@ public class Almacen extends JFrame {
         actualizarEstadoConexion();
         new javax.swing.Timer(10000, e -> actualizarEstadoConexion()).start();
 
-        // Menú principal
+     // Menú principal
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(Color.WHITE);
         setJMenuBar(menuBar);
 
-     // -------------------- BOTÓN: VENTAS --------------------
-        JButton ventasBtn = new JButton(new ImageIcon(getClass().getResource("/ventas.png")));
-        ventasBtn.setPreferredSize(new Dimension(20, 45));
+        // Estilo común
+        Dimension buttonSize = new Dimension(80, 60);
+
+        // -------------------- BOTÓN: VENTAS --------------------
+        JButton ventasBtn = new JButton("Ventas", new ImageIcon(getClass().getResource("/ventas.png")));
+        ventasBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        ventasBtn.setPreferredSize(new Dimension(80, 73));
         ventasBtn.setToolTipText("Ir a Ventas");
+        ventasBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        ventasBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        ventasBtn.setBackground(Color.WHITE);
         ventasBtn.addActionListener(e -> Navegador.irA(this, Ventas.class));
         menuBar.add(ventasBtn);
 
-     // -------------------- BOTÓN: ADMINISTRACIÓN --------------------
-        JButton adminBtn = new JButton(new ImageIcon(getClass().getResource("/admin.png")));
-        adminBtn.setPreferredSize(new Dimension(20, 20));
+        // -------------------- BOTÓN: ADMINISTRACIÓN --------------------
+        JButton adminBtn = new JButton("Administración", new ImageIcon(getClass().getResource("/admin.png")));
+        adminBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        adminBtn.setPreferredSize(new Dimension(80, 73));
         adminBtn.setToolTipText("Ir a Administración");
+        adminBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        adminBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        adminBtn.setBackground(Color.WHITE);
         adminBtn.addActionListener(e -> Navegador.irA(this, Administracion.class));
         menuBar.add(adminBtn);
 
-     // -------------------- BOTÓN: BASE DE DATOS --------------------
-        JButton configBtn = new JButton(new ImageIcon(getClass().getResource("/BD.png")));
-        configBtn.setPreferredSize(new Dimension(20, 20));
+        // -------------------- BOTÓN: BASE DE DATOS --------------------
+        JButton configBtn = new JButton("BD", new ImageIcon(getClass().getResource("/BD.png")));
+        configBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        configBtn.setPreferredSize(new Dimension(80, 73));
         configBtn.setToolTipText("Seleccionar Base de Datos");
+        configBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        configBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        configBtn.setBackground(Color.WHITE);
 
         JPopupMenu menuConfig = new JPopupMenu();
         JMenuItem seleccionarBD = new JMenuItem("Seleccionar base de datos");
         seleccionarBD.addActionListener(e -> SelectorBaseDatos.mostrarDialogo(this));
         menuConfig.add(seleccionarBD);
-
         configBtn.addActionListener(e -> menuConfig.show(configBtn, 0, configBtn.getHeight()));
         menuBar.add(configBtn);
 
-     // -------------------- BOTÓN: CERRAR SESIÓN --------------------
-        JButton cerrarSesionBtn = new JButton(new ImageIcon(getClass().getResource("/cerrar.png")));
-        cerrarSesionBtn.setPreferredSize(new Dimension(20, 20));
+        // -------------------- BOTÓN: CERRAR SESIÓN --------------------
+        JButton cerrarSesionBtn = new JButton("Cerrar", new ImageIcon(getClass().getResource("/cerrar.png")));
+        cerrarSesionBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        cerrarSesionBtn.setPreferredSize(new Dimension(80, 73));
         cerrarSesionBtn.setToolTipText("Cerrar sesión");
+        cerrarSesionBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        cerrarSesionBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        cerrarSesionBtn.setBackground(Color.WHITE);
         cerrarSesionBtn.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                 this,
@@ -222,6 +242,7 @@ public class Almacen extends JFrame {
             if (confirm == JOptionPane.YES_OPTION) System.exit(0);
         });
         menuBar.add(cerrarSesionBtn);
+
 
     }
 
