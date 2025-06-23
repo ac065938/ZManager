@@ -78,7 +78,6 @@ public class Perfiles extends JDialog {
                         JCheckBox chkActivo = new JCheckBox("Activo");
                                 // Fila 5
                                 content.add(chkActivo, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-                        
                                 // Botón
                                 JButton btnActualizar = new JButton("Actualizar Usuario");
                                 content.add(btnActualizar, new GridBagConstraints(5, 6, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 0), 0, 0));

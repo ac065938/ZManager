@@ -106,7 +106,14 @@ public class Administracion extends JFrame {
         btnConexiones.setHorizontalTextPosition(SwingConstants.CENTER);
         btnConexiones.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnConexiones.setBackground(Color.WHITE);
-        btnConexiones.addActionListener(e -> JOptionPane.showMessageDialog(this, "Abrir conexiones de base de datos"));
+        btnConexiones.addActionListener(e -> {
+            // Create an instance of your ConexionesBD class
+            ConexionesBD conexionesBDFrame = new ConexionesBD(); 
+            // Make the frame visible
+            conexionesBDFrame.setVisible(true);
+            // Optional: If this button is part of another frame that should be hidden, uncomment the next line
+            // this.dispose(); 
+        });
 
         accionesPanel.add(btnPerfiles);
         accionesPanel.add(btnConexiones);
