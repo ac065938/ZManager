@@ -11,71 +11,73 @@ public class Administracion extends JFrame {
         setSize(1000, 650);
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
-        
-        // Carga_la_imagen_desde_el_classpath
+
+        // Icono de ventana
         Image icon = Toolkit.getDefaultToolkit()
-                           .getImage(getClass().getResource("/LOGOZM.png"));
-        // Fija_el_icono_de_la_ventana
+                            .getImage(getClass().getResource("/LOGOZM.png"));
         setIconImage(icon);
 
-        // ----------Menú_tipo_hamburguesa----------
+        // -------------------- MENÚ SUPERIOR --------------------
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
-        JButton opcionesButton = new JButton("");
-        opcionesButton.setPreferredSize(new Dimension(10, 20));
-        opcionesButton.setIcon(new ImageIcon(Administracion.class.getResource("/menu.png")));
-        menuBar.add(opcionesButton);
+        // Botón: Ventas
+        JButton ventasBtn = new JButton(new ImageIcon(getClass().getResource("/ventas.png")));
+        ventasBtn.setPreferredSize(new Dimension(20, 45));
+        ventasBtn.setToolTipText("Ir a Ventas");
+        ventasBtn.addActionListener(e -> Navegador.irA(this, Ventas.class));
+        menuBar.add(ventasBtn);
 
-        JPopupMenu opcionesMenu = new JPopupMenu();
+        // Botón: Almacén
+        JButton almacenBtn = new JButton(new ImageIcon(getClass().getResource("/almacen.png")));
+        almacenBtn.setPreferredSize(new Dimension(20, 20));
+        almacenBtn.setToolTipText("Ir a Almacén");
+        almacenBtn.addActionListener(e -> Navegador.irA(this, Almacen.class));
+        menuBar.add(almacenBtn);
 
-        JMenuItem irVentas = new JMenuItem("Ir a Ventas");
-        irVentas.addActionListener(e -> Navegador.irA(this, Ventas.class));
-        opcionesMenu.add(irVentas);
+        // Botón: Base de datos
+        JButton configBtn = new JButton(new ImageIcon(getClass().getResource("/BD.png")));
+        configBtn.setPreferredSize(new Dimension(20, 20));
+        configBtn.setToolTipText("Seleccionar base de datos");
 
-        JMenuItem irAlmacen = new JMenuItem("Ir a Almacén");
-        irAlmacen.addActionListener(e -> Navegador.irA(this, Almacen.class));
-        opcionesMenu.add(irAlmacen);
-
+        JPopupMenu menuConfig = new JPopupMenu();
         JMenuItem seleccionarBD = new JMenuItem("Seleccionar base de datos");
         seleccionarBD.addActionListener(e -> SelectorBaseDatos.mostrarDialogo(this));
-        opcionesMenu.add(seleccionarBD);
+        menuConfig.add(seleccionarBD);
+        configBtn.addActionListener(e -> menuConfig.show(configBtn, 0, configBtn.getHeight()));
+        menuBar.add(configBtn);
 
-        JMenuItem cerrarSesion = new JMenuItem("Cerrar sesión");
-        cerrarSesion.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "¿Estás seguro que deseas cerrar sesión?",
-                "Confirmar cierre",
-                JOptionPane.YES_NO_OPTION
-            );
+        // Botón: Cerrar sesión
+        JButton cerrarSesionBtn = new JButton(new ImageIcon(getClass().getResource("/cerrar.png")));
+        cerrarSesionBtn.setPreferredSize(new Dimension(20, 20));
+        cerrarSesionBtn.setToolTipText("Cerrar sesión");
+        cerrarSesionBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "¿Estás seguro que deseas cerrar sesión?", "Confirmar cierre", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) System.exit(0);
         });
-        opcionesMenu.addSeparator();
-        opcionesMenu.add(cerrarSesion);
+        menuBar.add(cerrarSesionBtn);
 
-        opcionesButton.addActionListener(e -> opcionesMenu.show(opcionesButton, 0, opcionesButton.getHeight()));
-
-        // ----------Barra_tipo_ribbon_----------
+        // -------------------- RIBBON --------------------
         JToolBar ribbon = new JToolBar();
         ribbon.setFloatable(false);
         ribbon.setLayout(new FlowLayout(FlowLayout.LEFT));
         ribbon.setBackground(Color.WHITE);
 
-        // ----------Panel_de_acciones ----------
+        // -------------------- ACCIONES --------------------
         JPanel accionesPanel = new JPanel(new FlowLayout());
         accionesPanel.setBackground(Color.WHITE);
         accionesPanel.setBorder(BorderFactory.createTitledBorder("Acciones"));
 
         JButton btnPerfiles = new JButton("Perfiles de usuario");
-        btnPerfiles.setIcon(new ImageIcon(Administracion.class.getResource("/icono_perfiles.png")));
+        btnPerfiles.setIcon(new ImageIcon(getClass().getResource("/icono_perfiles.png")));
         btnPerfiles.setHorizontalTextPosition(SwingConstants.CENTER);
         btnPerfiles.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnPerfiles.setBackground(Color.WHITE);
         btnPerfiles.addActionListener(e -> Perfiles.mostrar(this));
 
         JButton btnConexiones = new JButton("Conexiones de BD");
-        btnConexiones.setIcon(new ImageIcon(Administracion.class.getResource("/icono_conexiones.png")));
+        btnConexiones.setIcon(new ImageIcon(getClass().getResource("/icono_conexiones.png")));
         btnConexiones.setHorizontalTextPosition(SwingConstants.CENTER);
         btnConexiones.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnConexiones.setBackground(Color.WHITE);

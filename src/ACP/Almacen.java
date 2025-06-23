@@ -91,6 +91,21 @@ public class Almacen extends JFrame {
         productoBusquedaPanel.add(limpiarAntesCheckbox, BorderLayout.SOUTH);
 
         ribbon.add(productoBusquedaPanel);
+        
+        JPanel filtrosPanel = new JPanel(new GridLayout(2, 1));
+        filtrosPanel.setBackground(new Color(255, 255, 255));
+        filtrosPanel.setPreferredSize(new Dimension(175, 105));
+        filtrosPanel.setBorder(BorderFactory.createTitledBorder("Filtros"));
+
+        JCheckBox cbStock = new JCheckBox("Solo en existencia", false);
+        cbStock.setBackground(new Color(255, 255, 255));
+        JCheckBox cbDescuentos = new JCheckBox("Mostrar con descuento");
+        cbDescuentos.setBackground(new Color(255, 255, 255));
+
+        filtrosPanel.add(cbStock);
+        filtrosPanel.add(cbDescuentos);
+
+        ribbon.add(filtrosPanel);
 
         // Sección_Acciones
         JPanel accionesPanel = new JPanel(new FlowLayout());
@@ -162,37 +177,42 @@ public class Almacen extends JFrame {
         actualizarEstadoConexion();
         new javax.swing.Timer(10000, e -> actualizarEstadoConexion()).start();
 
-        // Menú_hamburguesa
+        // Menú principal
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
-        JButton opcionesButton = new JButton("");
-        opcionesButton.setPreferredSize(new Dimension(10, 20));
-        opcionesButton.setIcon(new ImageIcon(Almacen.class.getResource("/menu.png")));
-        menuBar.add(opcionesButton);
+     // -------------------- BOTÓN: VENTAS --------------------
+        JButton ventasBtn = new JButton(new ImageIcon(getClass().getResource("/ventas.png")));
+        ventasBtn.setPreferredSize(new Dimension(20, 45));
+        ventasBtn.setToolTipText("Ir a Ventas");
+        ventasBtn.addActionListener(e -> Navegador.irA(this, Ventas.class));
+        menuBar.add(ventasBtn);
 
-        JPopupMenu opcionesMenu = new JPopupMenu();
+     // -------------------- BOTÓN: ADMINISTRACIÓN --------------------
+        JButton adminBtn = new JButton(new ImageIcon(getClass().getResource("/admin.png")));
+        adminBtn.setPreferredSize(new Dimension(20, 20));
+        adminBtn.setToolTipText("Ir a Administración");
+        adminBtn.addActionListener(e -> Navegador.irA(this, Administracion.class));
+        menuBar.add(adminBtn);
 
-        //JMenuItem ajustes = new JMenuItem("Ajustes generales");
-        //ajustes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Abriendo ajustes..."));
-        //opcionesMenu.add(ajustes);//
+     // -------------------- BOTÓN: BASE DE DATOS --------------------
+        JButton configBtn = new JButton(new ImageIcon(getClass().getResource("/BD.png")));
+        configBtn.setPreferredSize(new Dimension(20, 20));
+        configBtn.setToolTipText("Seleccionar Base de Datos");
 
-        JMenuItem irVentas = new JMenuItem("Ir a Ventas");
-        irVentas.addActionListener(e -> Navegador.irA(this, Ventas.class));
-        opcionesMenu.add(irVentas);
-        
-        JMenuItem irAdministracion = new JMenuItem("Ir a administración");
-        irAdministracion.addActionListener(e -> Navegador.irA(this, Administracion.class));
-        opcionesMenu.add(irAdministracion);
-
+        JPopupMenu menuConfig = new JPopupMenu();
         JMenuItem seleccionarBD = new JMenuItem("Seleccionar base de datos");
         seleccionarBD.addActionListener(e -> SelectorBaseDatos.mostrarDialogo(this));
-        opcionesMenu.add(seleccionarBD);
+        menuConfig.add(seleccionarBD);
 
-        opcionesMenu.addSeparator();
+        configBtn.addActionListener(e -> menuConfig.show(configBtn, 0, configBtn.getHeight()));
+        menuBar.add(configBtn);
 
-        JMenuItem cerrarSesion = new JMenuItem("Cerrar sesión");
-        cerrarSesion.addActionListener(e -> {
+     // -------------------- BOTÓN: CERRAR SESIÓN --------------------
+        JButton cerrarSesionBtn = new JButton(new ImageIcon(getClass().getResource("/cerrar.png")));
+        cerrarSesionBtn.setPreferredSize(new Dimension(20, 20));
+        cerrarSesionBtn.setToolTipText("Cerrar sesión");
+        cerrarSesionBtn.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "¿Estás seguro que deseas cerrar sesión?",
@@ -201,9 +221,8 @@ public class Almacen extends JFrame {
             );
             if (confirm == JOptionPane.YES_OPTION) System.exit(0);
         });
-        opcionesMenu.add(cerrarSesion);
+        menuBar.add(cerrarSesionBtn);
 
-        opcionesButton.addActionListener(e -> opcionesMenu.show(opcionesButton, 0, opcionesButton.getHeight()));
     }
 
     private void exportarTablaAExcel(JTable table, String path) {
