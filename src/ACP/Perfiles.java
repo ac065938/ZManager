@@ -76,7 +76,6 @@ public class Perfiles extends JDialog {
                         JTextField txtApodo = new JTextField();
                         content.add(txtApodo, new GridBagConstraints(5, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 0), 0, 0));
                         JCheckBox chkActivo = new JCheckBox("Activo");
-                        
                                 // Fila 5
                                 content.add(chkActivo, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
                         

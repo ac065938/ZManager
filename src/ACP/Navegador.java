@@ -20,7 +20,7 @@ public class Navegador {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        // Cierra la ventana actual
+        // Cierra_la_ventana_actual
         ventanaActual.dispose();
     }
 }

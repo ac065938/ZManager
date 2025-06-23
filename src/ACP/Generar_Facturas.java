@@ -8,7 +8,7 @@ public class Generar_Facturas extends JDialog {
     public Generar_Facturas(JFrame parent) {
         super(parent, "Facturas", true);
         // Dimensiones ajustadas para un mejor espaciado y apariencia general
-        setSize(746, 615);
+        setSize(794, 660);
         setLocationRelativeTo(parent);
         // Asegúrate de que la imagen LOGOZM.png esté en la ruta correcta del classpath
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png")));
@@ -53,12 +53,46 @@ public class Generar_Facturas extends JDialog {
 
         // Serie y Folio
         currentRow = addRow(contentPanel, currentRow, "Serie", "", "Folio", "");
-        // Fecha y Vendedor
-        currentRow = addRow(contentPanel, currentRow, "Fecha", "", "Vendedor", "");
+        
+        //---------------------- Fecha_y_Vendedor_con_calendario----------------------
+        // gbc ya fue declarada antes, solo reasignamos propiedades si es necesario
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.gridy = currentRow;
+
+        // Etiqueta_Fecha
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        contentPanel.add(new JLabel("Fecha:"), gbc);
+
+        // Selector de fecha con JXDatePicker
+        org.jdesktop.swingx.JXDatePicker datePicker = new org.jdesktop.swingx.JXDatePicker();
+        datePicker.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.5;
+        contentPanel.add(datePicker, gbc);
+
+        // Etiqueta Vendedor
+        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
+        contentPanel.add(new JLabel("Vendedor:"), gbc);
+
+        // Campo de texto para Vendedor
+        gbc.gridx = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.5;
+        JTextField vendedorField = createStyledTextField("");
+        contentPanel.add(vendedorField, gbc);
+
+        currentRow++;
+        
+        
+
         // Cliente y R. F. C.
         currentRow = addRow(contentPanel, currentRow, "Cliente", "", "R. F. C.", "");
 
-     // Importe
+        //Importe
         GridBagConstraints gbcImporteLabel = new GridBagConstraints();
         gbcImporteLabel.gridx = 0;
         gbcImporteLabel.gridy = currentRow;
@@ -117,10 +151,29 @@ public class Generar_Facturas extends JDialog {
         gbcCheck.insets = new Insets(15, 8, 15, 8);
         contentPanel.add(activaCheckBox, gbcCheck);
         currentRow++;
+        
+     // ---------------------- BOTÓN: GUARDAR ----------------------
+        JButton guardarBtn = new JButton("Guardar");
+        guardarBtn.setBackground(new Color(40, 167, 69)); // Verde Bootstrap
+        guardarBtn.setForeground(Color.WHITE);
+        guardarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        guardarBtn.setPreferredSize(new Dimension(100, 35));
+        guardarBtn.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Datos de factura guardados correctamente.");
+        });
+        
+        GridBagConstraints gbcGuardar = new GridBagConstraints();
+        gbcGuardar.gridx = 0;
+        gbcGuardar.gridy = currentRow;
+        gbcGuardar.gridwidth = 4;
+        gbcGuardar.anchor = GridBagConstraints.CENTER;
+        gbcGuardar.insets = new Insets(15, 8, 0, 8);
+        contentPanel.add(guardarBtn, gbcGuardar);
+        currentRow++;
 
-     // Botón "Cerrar"
+     // ---------------------- BOTÓN: CERRAR ----------------------
         JButton cerrarBtn = new JButton("Cerrar");
-        cerrarBtn.setBackground(new Color(220, 53, 69));
+        cerrarBtn.setBackground(new Color(220, 53, 69)); // Rojo Bootstrap
         cerrarBtn.setForeground(Color.WHITE);
         cerrarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         cerrarBtn.setPreferredSize(new Dimension(100, 35));
@@ -131,13 +184,13 @@ public class Generar_Facturas extends JDialog {
         gbcBtn.gridy = currentRow;
         gbcBtn.gridwidth = 4;
         gbcBtn.anchor = GridBagConstraints.CENTER;
-        gbcBtn.insets = new Insets(20, 8, 8, 8);
+        gbcBtn.insets = new Insets(10, 8, 8, 8);
         contentPanel.add(cerrarBtn, gbcBtn);
 
-        // Envuelve el panel de contenido en un JScrollPane para que sea desplazable
+        // Envuelve_el_panel_de_contenido_en_un_JScrollPane_para_que_sea_desplazable
         JScrollPane scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBorder(null); // Elimina el borde del scroll pane
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Velocidad de desplazamiento
+        scrollPane.setBorder(null); // Elimina_el_borde_del_scroll_pane
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Velocidad_de_desplazamiento
         setContentPane(scrollPane);
     }
 
