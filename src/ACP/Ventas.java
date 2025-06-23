@@ -28,7 +28,6 @@ public class Ventas extends JFrame {
         // Fija el icono de la ventana
         setIconImage(icon);
        
-        
         // ---------- Menú_tipo_hamburguesa ----------
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -155,7 +154,7 @@ public class Ventas extends JFrame {
         btnCotizar.setHorizontalTextPosition(SwingConstants.CENTER);
         btnCotizar.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        // Aquí abrimos el diálogo de registro de cliente
+        //registro_de_cliente
         btnCotizar.addActionListener(evt -> {
             FormularioCliente dlg = new FormularioCliente(this);
             dlg.setVisible(true);
@@ -172,6 +171,12 @@ public class Ventas extends JFrame {
         btnFactura.setIcon(new ImageIcon(Almacen.class.getResource("/Factura.png")));
         btnFactura.setHorizontalTextPosition(SwingConstants.CENTER);
         btnFactura.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        // Abre el formulario de facturación
+        btnFactura.addActionListener(e -> {
+            Generar_Facturas factura = new Generar_Facturas(this);
+            factura.setVisible(true);
+        });
 
         JButton btnClean = new JButton("Limpiar Pantalla");
         btnClean.setBackground(new Color(255, 255, 255));

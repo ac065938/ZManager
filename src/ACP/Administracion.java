@@ -12,13 +12,13 @@ public class Administracion extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
         
-        // Carga la imagen desde el classpath
+        // Carga_la_imagen_desde_el_classpath
         Image icon = Toolkit.getDefaultToolkit()
                            .getImage(getClass().getResource("/LOGOZM.png"));
-        // Fija el icono de la ventana
+        // Fija_el_icono_de_la_ventana
         setIconImage(icon);
 
-        // ---------- Menú tipo hamburguesa ----------
+        // ----------Menú_tipo_hamburguesa----------
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
@@ -56,13 +56,13 @@ public class Administracion extends JFrame {
 
         opcionesButton.addActionListener(e -> opcionesMenu.show(opcionesButton, 0, opcionesButton.getHeight()));
 
-        // ---------- Barra tipo ribbon ----------
+        // ----------Barra_tipo_ribbon_----------
         JToolBar ribbon = new JToolBar();
         ribbon.setFloatable(false);
         ribbon.setLayout(new FlowLayout(FlowLayout.LEFT));
         ribbon.setBackground(Color.WHITE);
 
-        // ---------- Panel de acciones ----------
+        // ----------Panel_de_acciones ----------
         JPanel accionesPanel = new JPanel(new FlowLayout());
         accionesPanel.setBackground(Color.WHITE);
         accionesPanel.setBorder(BorderFactory.createTitledBorder("Acciones"));
