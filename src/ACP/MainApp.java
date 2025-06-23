@@ -16,6 +16,7 @@ public class MainApp {
                 } else {
                     JOptionPane.showMessageDialog(loginWindow, "Debes seleccionar un usuario.");
                 }
+                
             });
 
             loginWindow.setVisible(true);
