@@ -7,91 +7,198 @@ public class Generar_Facturas extends JDialog {
 
     public Generar_Facturas(JFrame parent) {
         super(parent, "Facturas", true);
-        setSize(600, 500);
+        // Dimensiones ajustadas para un mejor espaciado y apariencia general
+        setSize(746, 615);
         setLocationRelativeTo(parent);
+        // Asegúrate de que la imagen LOGOZM.png esté en la ruta correcta del classpath
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png")));
 
+        // Panel principal con GridBagLayout para un control preciso del diseño
         JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         contentPanel.setBackground(Color.WHITE);
+        
+        // Borde vacío para un poco de espacio alrededor de los componentes
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
+        // Restricciones de GridBagLayout base
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
+        gbc.insets = new Insets(8, 8, 8, 8); // Espaciado entre componentes
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Los componentes se expanden horizontalmente
 
+     // Título
         JLabel titleLabel = new JLabel("Datos de la Factura");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        GridBagConstraints gbcTitle = new GridBagConstraints();
+        gbcTitle.gridx = 0;
+        gbcTitle.gridy = 0;
+        gbcTitle.gridwidth = 4;
+        gbcTitle.anchor = GridBagConstraints.WEST;
+        gbcTitle.insets = new Insets(8, 8, 8, 8);
+        contentPanel.add(titleLabel, gbcTitle);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 4;
-        contentPanel.add(titleLabel, gbc);
-        gbc.gridwidth = 1;
+        // Separador visual
+        JSeparator separator = new JSeparator();
+        GridBagConstraints gbcSeparator = new GridBagConstraints();
+        gbcSeparator.gridx = 0;
+        gbcSeparator.gridy = 1;
+        gbcSeparator.gridwidth = 4;
+        gbcSeparator.fill = GridBagConstraints.HORIZONTAL;
+        gbcSeparator.insets = new Insets(0, 0, 15, 0);
+        contentPanel.add(separator, gbcSeparator);
 
-        int y = 1;
-        y = addField(contentPanel, y, "Serie", "");
-        y = addField(contentPanel, y, "Folio", "");
-        y = addField(contentPanel, y, "Fecha", "");
-        y = addField(contentPanel, y, "Vendedor", "");
-        y = addField(contentPanel, y, "Cliente", "");
-        y = addField(contentPanel, y, "R. F. C.", "");
-        y = addField(contentPanel, y, "Importe", "");
 
-        // Tipo Factura (ComboBox)
-        gbc.gridx = 0;
-        gbc.gridy = y;
-        contentPanel.add(new JLabel("Tipo factura:"), gbc);
+        // Fila actual para la adición de componentes
+        int currentRow = 2; // Comenzamos en la fila 2 después del título y separador
 
-        JComboBox<String> tipoFacturaCombo = new JComboBox<>(new String[] {
-            "Contado", "Crédito", "Anticipo", "Otra"
-        });
-        gbc.gridx = 1;
-        gbc.gridy = y++;
-        contentPanel.add(tipoFacturaCombo, gbc);
+        // Serie y Folio
+        currentRow = addRow(contentPanel, currentRow, "Serie", "", "Folio", "");
+        // Fecha y Vendedor
+        currentRow = addRow(contentPanel, currentRow, "Fecha", "", "Vendedor", "");
+        // Cliente y R. F. C.
+        currentRow = addRow(contentPanel, currentRow, "Cliente", "", "R. F. C.", "");
 
-        y = addField(contentPanel, y, "Descto", "");
-        y = addField(contentPanel, y, "Moneda", "");
-        y = addField(contentPanel, y, "Tipo de cambio", "");
-        y = addField(contentPanel, y, "Sub-Total", "");
-        y = addField(contentPanel, y, "I. V. A.", "");
-        y = addField(contentPanel, y, "Total", "");
+     // Importe
+        GridBagConstraints gbcImporteLabel = new GridBagConstraints();
+        gbcImporteLabel.gridx = 0;
+        gbcImporteLabel.gridy = currentRow;
+        gbcImporteLabel.anchor = GridBagConstraints.EAST;
+        gbcImporteLabel.insets = new Insets(8, 8, 8, 8);
+        contentPanel.add(new JLabel("Importe:"), gbcImporteLabel);
 
-        // Factura activa
-        gbc.gridx = 0;
-        gbc.gridy = y++;
-        gbc.gridwidth = 2;
-        JCheckBox activaCheck = new JCheckBox("Factura activa");
-        contentPanel.add(activaCheck, gbc);
-        gbc.gridwidth = 1;
+        JTextField importeField = createStyledTextField("");
+        GridBagConstraints gbcImporteField = new GridBagConstraints();
+        gbcImporteField.gridx = 1;
+        gbcImporteField.gridy = currentRow;
+        gbcImporteField.fill = GridBagConstraints.HORIZONTAL;
+        gbcImporteField.weightx = 0.5;
+        gbcImporteField.insets = new Insets(8, 8, 8, 8);
+        contentPanel.add(importeField, gbcImporteField);
 
-        // Botón cerrar
-        gbc.gridx = 0;
-        gbc.gridy = y++;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
+        // Tipo factura
+        GridBagConstraints gbcTipoFacturaLabel = new GridBagConstraints();
+        gbcTipoFacturaLabel.gridx = 2;
+        gbcTipoFacturaLabel.gridy = currentRow;
+        gbcTipoFacturaLabel.anchor = GridBagConstraints.EAST;
+        gbcTipoFacturaLabel.insets = new Insets(8, 8, 8, 8);
+        contentPanel.add(new JLabel("Tipo factura:"), gbcTipoFacturaLabel);
+
+        JComboBox<String> tipoFacturaCombo = new JComboBox<>(new String[]{"Contado", "Crédito", "Anticipo", "Otra"});
+        tipoFacturaCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tipoFacturaCombo.setBackground(Color.WHITE);
+        tipoFacturaCombo.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+
+        GridBagConstraints gbcTipoFacturaCombo = new GridBagConstraints();
+        gbcTipoFacturaCombo.gridx = 3;
+        gbcTipoFacturaCombo.gridy = currentRow;
+        gbcTipoFacturaCombo.fill = GridBagConstraints.HORIZONTAL;
+        gbcTipoFacturaCombo.insets = new Insets(8, 8, 8, 8);
+        contentPanel.add(tipoFacturaCombo, gbcTipoFacturaCombo);
+
+        currentRow++;
+
+        // Descto y Moneda
+        currentRow = addRow(contentPanel, currentRow, "Descto", "", "Moneda", "");
+        // Tipo de cambio y Sub-Total
+        currentRow = addRow(contentPanel, currentRow, "Tipo de cambio", "", "Sub-Total", "");
+        // I. V. A. y Total
+        currentRow = addRow(contentPanel, currentRow, "I. V. A.", "", "Total", "");
+
+        // Checkbox "Factura activa"
+        JCheckBox activaCheckBox = new JCheckBox("Factura activa");
+        activaCheckBox.setBackground(Color.WHITE);
+        activaCheckBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        GridBagConstraints gbcCheck = new GridBagConstraints();
+        gbcCheck.gridx = 0;
+        gbcCheck.gridy = currentRow;
+        gbcCheck.gridwidth = 4;
+        gbcCheck.anchor = GridBagConstraints.WEST;
+        gbcCheck.insets = new Insets(15, 8, 15, 8);
+        contentPanel.add(activaCheckBox, gbcCheck);
+        currentRow++;
+
+     // Botón "Cerrar"
         JButton cerrarBtn = new JButton("Cerrar");
+        cerrarBtn.setBackground(new Color(220, 53, 69));
+        cerrarBtn.setForeground(Color.WHITE);
+        cerrarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        cerrarBtn.setPreferredSize(new Dimension(100, 35));
         cerrarBtn.addActionListener(e -> dispose());
-        contentPanel.add(cerrarBtn, gbc);
 
-        setContentPane(contentPanel);
+        GridBagConstraints gbcBtn = new GridBagConstraints();
+        gbcBtn.gridx = 0;
+        gbcBtn.gridy = currentRow;
+        gbcBtn.gridwidth = 4;
+        gbcBtn.anchor = GridBagConstraints.CENTER;
+        gbcBtn.insets = new Insets(20, 8, 8, 8);
+        contentPanel.add(cerrarBtn, gbcBtn);
+
+        // Envuelve el panel de contenido en un JScrollPane para que sea desplazable
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(null); // Elimina el borde del scroll pane
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Velocidad de desplazamiento
+        setContentPane(scrollPane);
     }
 
-    private int addField(JPanel panel, int y, String label, String placeholder) {
+    /**
+     * Agrega una fila de dos etiquetas y dos campos de texto al panel.
+     *
+     * @param panel  El JPanel al que se añadirán los componentes.
+     * @param y      La fila actual en GridBagLayout.
+     * @param label1 Texto de la primera etiqueta.
+     * @param val1   Valor inicial del primer campo de texto.
+     * @param label2 Texto de la segunda etiqueta.
+     * @param val2   Valor inicial del segundo campo de texto.
+     * @return La siguiente fila disponible.
+     */
+    private int addRow(JPanel panel, int y, String label1, String val1, String label2, String val2) {
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        gbc.gridx = 0;
+        gbc.insets = new Insets(8, 8, 8, 8); // Espaciado consistente
         gbc.gridy = y;
-        panel.add(new JLabel(label + ":"), gbc);
 
-        gbc.gridx = 1;
-        gbc.gridy = y;
-        JTextField field = new JTextField(placeholder);
-        panel.add(field, gbc);
+        // Primer par de etiqueta y campo de texto
+        if (!label1.isEmpty()) {
+            gbc.gridx = 0;
+            gbc.anchor = GridBagConstraints.EAST; // Alinea la etiqueta a la derecha
+            panel.add(new JLabel(label1 + ":"), gbc);
 
-        return y + 1;
+            gbc.gridx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL; // El campo de texto se expande
+            gbc.weightx = 0.5; // Asigna peso para distribución horizontal
+            JTextField field1 = createStyledTextField(val1);
+            panel.add(field1, gbc);
+        }
+
+        // Segundo par de etiqueta y campo de texto
+        if (!label2.isEmpty()) {
+            gbc.gridx = 2;
+            gbc.fill = GridBagConstraints.NONE; // No expandir horizontalmente
+            gbc.anchor = GridBagConstraints.EAST; // Alinea la etiqueta a la derecha
+            panel.add(new JLabel(label2 + ":"), gbc);
+
+            gbc.gridx = 3;
+            gbc.fill = GridBagConstraints.HORIZONTAL; // El campo de texto se expande
+            gbc.weightx = 0.5; // Asigna peso
+            JTextField field2 = createStyledTextField(val2);
+            panel.add(field2, gbc);
+        }
+
+        return y + 1; // Retorna la siguiente fila disponible
+    }
+
+    /**
+     * Crea un JTextField con un estilo uniforme.
+     * @param text El texto inicial del campo.
+     * @return Un JTextField estilizado.
+     */
+    private JTextField createStyledTextField(String text) {
+        JTextField field = new JTextField(text);
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Fuente y tamaño consistente
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), // Borde más suave
+            BorderFactory.createEmptyBorder(5, 8, 5, 8) // Padding interno
+        ));
+        return field;
     }
 }
