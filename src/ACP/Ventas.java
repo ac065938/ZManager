@@ -1,0 +1,224 @@
+package ACP;
+
+import ACP.Ventas;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.net.URL;
+import java.sql.SQLException;
+
+public class Ventas extends JFrame {
+
+    private JLabel estado;
+    private JTable tabla;
+    private DefaultTableModel modeloTabla;
+
+    public Ventas() {
+        setTitle("ZManager 2.0 - Ventas");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(1000, 650);
+        setLocationRelativeTo(null);
+        getContentPane().setLayout(new BorderLayout());
+        
+        // Carga la imagen desde el classpath
+        Image icon = Toolkit.getDefaultToolkit()
+                           .getImage(getClass().getResource("/LOGOZM.png"));
+        // Fija el icono de la ventana
+        setIconImage(icon);
+       
+        
+        // ---------- Menú_tipo_hamburguesa ----------
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        JButton opcionesButton = new JButton("");
+        opcionesButton.setBackground(new Color(255, 255, 255));
+        opcionesButton.setPreferredSize(new Dimension(10, 20));
+        opcionesButton.setIcon(new ImageIcon(Ventas.class.getResource("/menu.png")));
+        menuBar.add(opcionesButton);
+
+        JPopupMenu opcionesMenu = new JPopupMenu();
+
+        JMenuItem irAlmacen = new JMenuItem("Ir a Almacén");
+        irAlmacen.addActionListener(e -> Navegador.irA(this, Almacen.class));
+        opcionesMenu.add(irAlmacen);
+
+        JMenuItem irAdministracion = new JMenuItem("Ir a administración");
+        irAdministracion.addActionListener(e -> Navegador.irA(this, Administracion.class));
+        opcionesMenu.add(irAdministracion);
+
+        JMenuItem seleccionarBD = new JMenuItem("Seleccionar base de datos");
+        seleccionarBD.addActionListener(e -> SelectorBaseDatos.mostrarDialogo(this));
+        opcionesMenu.add(seleccionarBD);
+
+        JMenuItem cerrarSesion = new JMenuItem("Cerrar sesión");
+        cerrarSesion.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "¿Estás seguro que deseas cerrar sesión?",
+                    "Confirmar cierre",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (confirm == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+        opcionesMenu.addSeparator();
+        opcionesMenu.add(cerrarSesion);
+
+        opcionesButton.addActionListener(e -> opcionesMenu.show(opcionesButton, 0, opcionesButton.getHeight()));
+
+        //---------- Barra_tipo_Ribbon ----------
+        JToolBar ribbon = new JToolBar();
+        ribbon.setBackground(new Color(255, 255, 255));
+        ribbon.setFloatable(false);
+        ribbon.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        //---------- Buscar_Producto ----------
+        JPanel clienteProductoPanel = new JPanel(new BorderLayout());
+        clienteProductoPanel.setBackground(new Color(255, 255, 255));
+        clienteProductoPanel.setPreferredSize(new Dimension(210, 105));
+        clienteProductoPanel.setBorder(BorderFactory.createTitledBorder("Buscar Producto"));
+
+        JPanel filaSKU = new JPanel(new GridLayout(1, 2, 5, 0));
+
+        JTextField campoSKU = new JTextField("%SKU%");
+        campoSKU.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (campoSKU.getText().equals("%SKU%")) campoSKU.setText("");
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (campoSKU.getText().trim().isEmpty()) campoSKU.setText("%SKU%");
+            }
+        });
+
+        JTextField campoFiltro = new JTextField("%Filtro%");
+        campoFiltro.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (campoFiltro.getText().equals("%Filtro%")) campoFiltro.setText("");
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (campoFiltro.getText().trim().isEmpty()) campoFiltro.setText("%Filtro%");
+            }
+        });
+
+        filaSKU.add(campoSKU);
+        filaSKU.add(campoFiltro);
+
+        JTextField campoCaracteristicas2 = new JTextField("Caracteristicas");
+        campoCaracteristicas2.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (campoCaracteristicas2.getText().equals("Caracteristicas")) campoCaracteristicas2.setText("");
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (campoCaracteristicas2.getText().trim().isEmpty()) campoCaracteristicas2.setText("Caracteristicas");
+            }
+        });
+
+        clienteProductoPanel.add(filaSKU, BorderLayout.NORTH);
+        clienteProductoPanel.add(campoCaracteristicas2, BorderLayout.CENTER);
+
+        ribbon.add(clienteProductoPanel);
+
+        JCheckBox chckbxNewCheckBox = new JCheckBox("Limpiar antes de cargar información");
+        chckbxNewCheckBox.setBackground(new Color(255, 255, 255));
+        chckbxNewCheckBox.setSelected(true);
+        clienteProductoPanel.add(chckbxNewCheckBox, BorderLayout.SOUTH);
+
+        JPanel filtrosPanel = new JPanel(new GridLayout(2, 1));
+        filtrosPanel.setBackground(new Color(255, 255, 255));
+        filtrosPanel.setPreferredSize(new Dimension(175, 105));
+        filtrosPanel.setBorder(BorderFactory.createTitledBorder("Filtros"));
+
+        JCheckBox cbStock = new JCheckBox("Solo en existencia", false);
+        cbStock.setBackground(new Color(255, 255, 255));
+        JCheckBox cbDescuentos = new JCheckBox("Mostrar con descuento");
+        cbDescuentos.setBackground(new Color(255, 255, 255));
+
+        filtrosPanel.add(cbStock);
+        filtrosPanel.add(cbDescuentos);
+
+        ribbon.add(filtrosPanel);
+
+        JPanel accionesPanel = new JPanel(new FlowLayout());
+        accionesPanel.setBackground(new Color(255, 255, 255));
+        accionesPanel.setBorder(BorderFactory.createTitledBorder("Acciones"));
+
+        JButton btnCotizar = new JButton("Registrar Cliente");
+        btnCotizar.setBackground(new Color(255, 255, 255));
+        btnCotizar.setIcon(new ImageIcon(Ventas.class.getResource("/Registrar_Cliente.png")));
+        btnCotizar.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnCotizar.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        // Aquí abrimos el diálogo de registro de cliente
+        btnCotizar.addActionListener(evt -> {
+            FormularioCliente dlg = new FormularioCliente(this);
+            dlg.setVisible(true);
+        });
+
+        JButton btnVenta = new JButton("Generar Venta");
+        btnVenta.setBackground(new Color(255, 255, 255));
+        btnVenta.setIcon(new ImageIcon(Almacen.class.getResource("/Generar_Venta.png")));
+        btnVenta.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnVenta.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        JButton btnFactura = new JButton("Generar Factura");
+        btnFactura.setBackground(new Color(255, 255, 255));
+        btnFactura.setIcon(new ImageIcon(Almacen.class.getResource("/Factura.png")));
+        btnFactura.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnFactura.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        JButton btnClean = new JButton("Limpiar Pantalla");
+        btnClean.setBackground(new Color(255, 255, 255));
+        btnClean.setIcon(new ImageIcon(Almacen.class.getResource("/limpiar pantalla.png")));
+        btnClean.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnClean.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnClean.addActionListener(e -> modeloTabla.setRowCount(0));
+
+        accionesPanel.add(btnCotizar);
+        accionesPanel.add(btnVenta);
+        accionesPanel.add(btnFactura);
+        accionesPanel.add(btnClean);
+
+        ribbon.add(accionesPanel);
+
+        getContentPane().add(ribbon, BorderLayout.NORTH);
+
+        String[] columnas = {"SKU", "Descripción", "Cantidad", "Precio Unitario", "Descuento", "Total"};
+        modeloTabla = new DefaultTableModel(columnas, 0);
+        tabla = new JTable(modeloTabla);
+        JScrollPane scrollTabla = new JScrollPane(tabla);
+        getContentPane().add(scrollTabla, BorderLayout.CENTER);
+
+        estado = new JLabel("Estado: verificando conexión...");
+        estado.setBackground(new Color(255, 255, 255));
+        estado.setForeground(Color.DARK_GRAY);
+        getContentPane().add(estado, BorderLayout.SOUTH);
+
+        actualizarEstadoConexion();
+        new javax.swing.Timer(10000, e -> actualizarEstadoConexion()).start();
+    }
+
+    private void actualizarEstadoConexion() {
+        boolean conectado = DBConnection.estaConectado();
+        if (conectado) {
+            estado.setText("Estado: conectado a la base de datos");
+            estado.setForeground(new Color(0, 128, 0));
+        } else {
+            estado.setText("Estado: sin conexión a la base de datos");
+            estado.setForeground(Color.RED);
+        }
+    }
+
+    public static void mostrar() {
+        SwingUtilities.invokeLater(() -> {
+            Ventas ventana = new Ventas();
+            ventana.setVisible(true);
+        });
+    }
+}
