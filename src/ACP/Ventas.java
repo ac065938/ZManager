@@ -199,7 +199,7 @@ public class Ventas extends JFrame {
         btnFactura.setHorizontalTextPosition(SwingConstants.CENTER);
         btnFactura.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        // Abre el formulario de facturación
+        // Abre_el_formulario_de_facturación
         btnFactura.addActionListener(e -> {
             Generar_Facturas factura = new Generar_Facturas(this);
             factura.setVisible(true);
@@ -225,13 +225,13 @@ public class Ventas extends JFrame {
         JScrollPane scrollTabla = new JScrollPane(tabla);
         getContentPane().add(scrollTabla, BorderLayout.CENTER);
 
-     // -------------------- ESTADO BD --------------------
+        //-------------------- ESTADO BD --------------------
         JLabel estadoBD = new JLabel();
         estadoBD.setFont(new Font("Segoe UI", Font.BOLD, 12));
         estadoBD.setOpaque(true);
         estadoBD.setHorizontalAlignment(SwingConstants.CENTER);
         estadoBD.setPreferredSize(new Dimension(200, 30));
-        actualizarEstadoBD(estadoBD); // <-- actualiza colores y texto
+        actualizarEstadoBD(estadoBD); // <-- actualiza_colores_y_texto
         getContentPane().add(estadoBD, BorderLayout.SOUTH);
 
         // Timer para actualizar automáticamente cada 10s

@@ -98,7 +98,7 @@ public class Administracion extends JFrame {
 
         getContentPane().add(estadoBD, BorderLayout.SOUTH);
 
-        // -------------------- ACCIONES --------------------
+        //-------------------- ACCIONES --------------------
         JPanel accionesPanel = new JPanel(new FlowLayout());
         accionesPanel.setBackground(Color.WHITE);
         accionesPanel.setBorder(BorderFactory.createTitledBorder("Acciones"));
@@ -123,14 +123,14 @@ public class Administracion extends JFrame {
         accionesPanel.add(btnPerfiles);
         accionesPanel.add(btnConexiones);
 
-        // -------------------- RIBBON --------------------
+        //-------------------- RIBBON --------------------
         JToolBar ribbon = new JToolBar();
         ribbon.setFloatable(false);
         ribbon.setLayout(new FlowLayout(FlowLayout.LEFT));
         ribbon.setBackground(Color.WHITE);
         ribbon.add(accionesPanel);
 
-        // -------------------- CONTENEDOR SUPERIOR --------------------
+        //-------------------- CONTENEDOR SUPERIOR --------------------
         JPanel contenedorSuperior = new JPanel();
         contenedorSuperior.setLayout(new BoxLayout(contenedorSuperior, BoxLayout.Y_AXIS));
 

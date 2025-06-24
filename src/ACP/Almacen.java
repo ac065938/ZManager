@@ -160,7 +160,7 @@ public class Almacen extends JFrame {
 
         //Tabla
         String[] columnNames = {
-            "Código", "Descripción", "Línea", "Precio", "Ventas", "Almacén", "Escaner", "Descto", "Descont"
+            "Código", "Descripción", "Línea", "Precio", "Ventas", "Almacen", "Escaner", "Medida", "Descto", "Descont"
         };
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
@@ -187,7 +187,7 @@ public class Almacen extends JFrame {
         // Estilo_común
         Dimension buttonSize = new Dimension(80, 60);
 
-        // -------------------- BOTÓN: VENTAS --------------------
+        //-------------------- BOTÓN: VENTAS --------------------
         JButton ventasBtn = new JButton("Ventas", new ImageIcon(getClass().getResource("/ventas.png")));
         ventasBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         ventasBtn.setPreferredSize(new Dimension(80, 73));
