@@ -12,11 +12,10 @@ public class MainApp {
 
                 if (usuario != null && !usuario.trim().isEmpty()) {
                     loginWindow.dispose();
-                    Almacen.mostrar();
+                    Inicio.mostrar(null); // Mostrar ventana intermedia con botones
                 } else {
                     JOptionPane.showMessageDialog(loginWindow, "Debes seleccionar un usuario.");
                 }
-                
             });
 
             loginWindow.setVisible(true);

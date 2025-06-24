@@ -71,7 +71,7 @@ public class Almacen extends JFrame {
         filaSKUProducto.add(campoSkuProducto);
         filaSKUProducto.add(campoFiltroProducto);
 
-        // Campo_de_características_corregido
+        //Campo_de_características_corregido
         JTextField campoCaracteristicas = new JTextField("Caracteristicas");
         campoCaracteristicas.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
@@ -108,7 +108,7 @@ public class Almacen extends JFrame {
 
         ribbon.add(filtrosPanel);
 
-        // Sección_Acciones
+        //Sección_Acciones
         JPanel accionesPanel = new JPanel(new FlowLayout());
         accionesPanel.setBackground(new Color(255, 255, 255));
         accionesPanel.setBorder(BorderFactory.createTitledBorder("Acciones"));
@@ -160,7 +160,7 @@ public class Almacen extends JFrame {
         ribbon.add(accionesPanel);
         getContentPane().add(ribbon, BorderLayout.NORTH);
 
-        // Tabla
+        //Tabla
         String[] columnNames = {
             "Código", "Descripción", "Línea", "Precio", "Ventas", "Almacén", "Escaner", "Descto", "Descont"
         };
@@ -169,7 +169,7 @@ public class Almacen extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        // Estado
+        //Estado
         statusLabel = new JLabel("Estado: verificando conexión...");
         statusLabel.setBackground(new Color(78, 186, 222));
         statusLabel.setForeground(Color.DARK_GRAY);
@@ -178,7 +178,7 @@ public class Almacen extends JFrame {
         actualizarEstadoConexion();
         new javax.swing.Timer(10000, e -> actualizarEstadoConexion()).start();
 
-     // Menú principal
+        //Menú principal
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Color.WHITE);
         setJMenuBar(menuBar);
