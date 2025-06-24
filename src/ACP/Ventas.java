@@ -200,23 +200,29 @@ public class Ventas extends JFrame {
         JScrollPane scrollTabla = new JScrollPane(tabla);
         getContentPane().add(scrollTabla, BorderLayout.CENTER);
 
-        estado = new JLabel("Estado: verificando conexión...");
-        estado.setBackground(new Color(255, 255, 255));
-        estado.setForeground(Color.DARK_GRAY);
-        getContentPane().add(estado, BorderLayout.SOUTH);
+     // -------------------- ESTADO BD --------------------
+        JLabel estadoBD = new JLabel();
+        estadoBD.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        estadoBD.setOpaque(true);
+        estadoBD.setHorizontalAlignment(SwingConstants.CENTER);
+        estadoBD.setPreferredSize(new Dimension(200, 30));
+        actualizarEstadoBD(estadoBD); // <-- actualiza colores y texto
+        getContentPane().add(estadoBD, BorderLayout.SOUTH);
 
-        actualizarEstadoConexion();
-        new javax.swing.Timer(10000, e -> actualizarEstadoConexion()).start();
+        // Timer para actualizar automáticamente cada 10s
+        new javax.swing.Timer(10000, e -> actualizarEstadoBD(estadoBD)).start();
+
     }
 
-    private void actualizarEstadoConexion() {
-        boolean conectado = DBConnection.estaConectado();
-        if (conectado) {
-            estado.setText("Estado: conectado a la base de datos");
-            estado.setForeground(new Color(0, 128, 0));
+    private void actualizarEstadoBD(JLabel estadoBD) {
+        if (DBConnection.estaConectado()) {
+            estadoBD.setText("Conectado a BD");
+            estadoBD.setBackground(new Color(0, 153, 51));  // Verde
+            estadoBD.setForeground(Color.WHITE);
         } else {
-            estado.setText("Estado: sin conexión a la base de datos");
-            estado.setForeground(Color.RED);
+            estadoBD.setText("Sin conexión a BD");
+            estadoBD.setBackground(new Color(204, 0, 0));   // Rojo
+            estadoBD.setForeground(Color.WHITE);
         }
     }
 

@@ -81,6 +81,26 @@ public class Administracion extends JFrame {
             );
             if (confirm == JOptionPane.YES_OPTION) System.exit(0);
         });
+        
+        //CONEXIÓN CON DBCONNETCION
+        JLabel estadoBD = new JLabel();
+        estadoBD.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        estadoBD.setOpaque(true);
+        estadoBD.setHorizontalAlignment(SwingConstants.CENTER);
+
+        if (DBConnection.estaConectado()) {
+            estadoBD.setText("Conectado a BD");
+            estadoBD.setBackground(new Color(0, 153, 51));  // Verde
+            estadoBD.setForeground(Color.WHITE);
+        } else {
+            estadoBD.setText("Sin conexión a BD");
+            estadoBD.setBackground(new Color(204, 0, 0));   // Rojo
+            estadoBD.setForeground(Color.WHITE);
+        }
+
+        getContentPane().add(estadoBD, BorderLayout.SOUTH);
+
+        
         menuBar.add(cerrarSesionBtn);
 
         // -------------------- RIBBON --------------------
@@ -122,6 +142,7 @@ public class Administracion extends JFrame {
         getContentPane().add(ribbon, BorderLayout.NORTH);
     }
 
+    
     public static void mostrar() {
         SwingUtilities.invokeLater(() -> {
             Administracion ventana = new Administracion();
