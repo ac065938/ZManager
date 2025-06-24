@@ -1,27 +1,25 @@
-// Clase RelojMexico.java
 package ACP;
 
 import javax.swing.*;
-import java.awt.*;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class RelojMexico extends JLabel {
-    private static final ZoneId ZONA_MEXICO = ZoneId.of("America/Mexico_City");
-    private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    private final SimpleDateFormat formato = new SimpleDateFormat("EEEE, dd 'de' MMMM 'de' yyyy | HH:mm:ss", new Locale("es", "MX"));
 
     public RelojMexico() {
-        setFont(new Font("Segoe UI", Font.BOLD, 14));
-        setForeground(new Color(0, 102, 204));
-        setHorizontalAlignment(SwingConstants.RIGHT);
-
-        Timer timer = new Timer(1000, e -> actualizarHora());
+        formato.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
+        Timer timer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	String texto = formato.format(new Date());
+            	setText(Character.toUpperCase(texto.charAt(0)) + texto.substring(1));
+            }
+        });
         timer.start();
-        actualizarHora();
-    }
-
-    private void actualizarHora() {
-        LocalTime horaActual = LocalTime.now(ZONA_MEXICO);
-        setText("" + horaActual.format(FORMATO));
     }
 }
