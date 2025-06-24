@@ -22,35 +22,57 @@ public class Ventas extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
         
-        // Carga la imagen desde el classpath
+        // Carga_la_imagen_desde_el_classpath
         Image icon = Toolkit.getDefaultToolkit()
                            .getImage(getClass().getResource("/LOGOZM.png"));
-        // Fija el icono de la ventana
+        // Fija_el_icono_de_la_ventana
         setIconImage(icon);
        
-        // ---------- Menú_tipo_hamburguesa ----------
+        //Menú_principal
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(Color.WHITE);
         setJMenuBar(menuBar);
 
-        JButton opcionesButton = new JButton("");
-        opcionesButton.setBackground(new Color(255, 255, 255));
-        opcionesButton.setPreferredSize(new Dimension(10, 20));
-        opcionesButton.setIcon(new ImageIcon(Ventas.class.getResource("/menu.png")));
-        menuBar.add(opcionesButton);
+        // Estilo_común
+        Dimension buttonSize = new Dimension(80, 60);
 
-        JPopupMenu opcionesMenu = new JPopupMenu();
+        // -------------------- BOTÓN: VENTAS --------------------
+        JButton Almacenbtn = new JButton("Almacen", new ImageIcon(getClass().getResource("/almacen.png")));
+        Almacenbtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        Almacenbtn.setPreferredSize(new Dimension(80, 73));
+        Almacenbtn.setToolTipText("Ir a Almacen");
+        Almacenbtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        Almacenbtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        Almacenbtn.setBackground(Color.WHITE);
+        Almacenbtn.addActionListener(e -> Navegador.irA(this, Almacen.class));
+        menuBar.add(Almacenbtn);
 
-        JMenuItem irAlmacen = new JMenuItem("Ir a Almacén");
-        irAlmacen.addActionListener(e -> Navegador.irA(this, Almacen.class));
-        opcionesMenu.add(irAlmacen);
+        // -------------------- BOTÓN: ADMINISTRACIÓN --------------------
+        JButton adminBtn = new JButton("Administración", new ImageIcon(getClass().getResource("/admin.png")));
+        adminBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        adminBtn.setPreferredSize(new Dimension(80, 73));
+        adminBtn.setToolTipText("Ir a Administración");
+        adminBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        adminBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        adminBtn.setBackground(Color.WHITE);
+        adminBtn.addActionListener(e -> Navegador.irA(this, Administracion.class));
+        menuBar.add(adminBtn);
 
-        JMenuItem irAdministracion = new JMenuItem("Ir a administración");
-        irAdministracion.addActionListener(e -> Navegador.irA(this, Administracion.class));
-        opcionesMenu.add(irAdministracion);
+        // -------------------- BOTÓN: BASE DE DATOS --------------------
+        JButton configBtn = new JButton("BD", new ImageIcon(getClass().getResource("/BD.png")));
+        configBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        configBtn.setPreferredSize(new Dimension(80, 73));
+        configBtn.setToolTipText("Seleccionar Base de Datos");
+        configBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        configBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        configBtn.setBackground(Color.WHITE);
 
+        JPopupMenu menuConfig = new JPopupMenu();
         JMenuItem seleccionarBD = new JMenuItem("Seleccionar base de datos");
         seleccionarBD.addActionListener(e -> SelectorBaseDatos.mostrarDialogo(this));
-        opcionesMenu.add(seleccionarBD);
+        menuConfig.add(seleccionarBD);
+        configBtn.addActionListener(e -> menuConfig.show(configBtn, 0, configBtn.getHeight()));
+        menuBar.add(configBtn);
 
         //BOTON CERRAR SESION - REINGRESO
         JButton cerrarSesionBtn = new JButton("Cerrar", new ImageIcon(getClass().getResource("/cerrar.png")));
@@ -69,14 +91,10 @@ public class Ventas extends JFrame {
             );
             if (confirm == JOptionPane.YES_OPTION) {
                 this.dispose(); // Cierra la ventana actual
-                MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
+                MainApp.mostrarLogin(); // Vuelve a ejecutar el_login_con_listener
             }
         });
         menuBar.add(cerrarSesionBtn);
-
-
-
-        opcionesButton.addActionListener(e -> opcionesMenu.show(opcionesButton, 0, opcionesButton.getHeight()));
 
         //---------- Barra_tipo_Ribbon ----------
         JToolBar ribbon = new JToolBar();
@@ -201,8 +219,6 @@ public class Ventas extends JFrame {
 
         ribbon.add(accionesPanel);
 
-        getContentPane().add(ribbon, BorderLayout.NORTH);
-
         String[] columnas = {"SKU", "Descripción", "Cantidad", "Precio Unitario", "Descuento", "Total"};
         modeloTabla = new DefaultTableModel(columnas, 0);
         tabla = new JTable(modeloTabla);
@@ -220,6 +236,27 @@ public class Ventas extends JFrame {
 
         // Timer para actualizar automáticamente cada 10s
         new javax.swing.Timer(10000, e -> actualizarEstadoBD(estadoBD)).start();
+        
+        // Crea el contenedor vertical
+        JPanel contenedorSuperior = new JPanel();
+        contenedorSuperior.setLayout(new BoxLayout(contenedorSuperior, BoxLayout.Y_AXIS));
+
+        // Panel con el reloj
+        JPanel panelReloj = new JPanel(new BorderLayout());
+        panelReloj.setBackground(Color.WHITE);
+        panelReloj.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
+
+        RelojMexico reloj = new RelojMexico();
+        reloj.setForeground(new Color(0, 0, 0));
+        reloj.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        reloj.setHorizontalAlignment(SwingConstants.LEFT);
+        panelReloj.add(reloj, BorderLayout.WEST);
+
+        // Agrega reloj y luego el ribbon original (el que ya contenía tus botones y estilos)
+        contenedorSuperior.add(panelReloj);
+        contenedorSuperior.add(ribbon); // Asegúrate que este contenga todos tus botones
+
+        getContentPane().add(contenedorSuperior, BorderLayout.NORTH);
 
     }
 

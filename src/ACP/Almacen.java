@@ -248,6 +248,27 @@ public class Almacen extends JFrame {
         menuBar.add(cerrarSesionBtn);
 
 
+        // Crea el contenedor vertical
+        JPanel contenedorSuperior = new JPanel();
+        contenedorSuperior.setLayout(new BoxLayout(contenedorSuperior, BoxLayout.Y_AXIS));
+
+        // Panel con el reloj
+        JPanel panelReloj = new JPanel(new BorderLayout());
+        panelReloj.setBackground(Color.WHITE);
+        panelReloj.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
+
+        RelojMexico reloj = new RelojMexico();
+        reloj.setForeground(new Color(0, 0, 0));
+        reloj.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        reloj.setHorizontalAlignment(SwingConstants.LEFT);
+        panelReloj.add(reloj, BorderLayout.WEST);
+
+        // Agrega reloj y luego el ribbon original (el que ya contenía tus botones y estilos)
+        contenedorSuperior.add(panelReloj);
+        contenedorSuperior.add(ribbon); // Asegúrate que este contenga todos tus botones
+
+        getContentPane().add(contenedorSuperior, BorderLayout.NORTH);
+        
     }
 
     private void exportarTablaAExcel(JTable table, String path) {
@@ -296,6 +317,8 @@ public class Almacen extends JFrame {
         }
     }
 
+    
+    
     public static void mostrar() {
         SwingUtilities.invokeLater(() -> {
             Almacen ventana = new Almacen();

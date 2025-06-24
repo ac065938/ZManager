@@ -169,7 +169,7 @@ public class Generar_Facturas extends JDialog {
         contentPanel.add(guardarBtn, gbcGuardar);
         currentRow++;
 
-     // ---------------------- BOTÓN: CERRAR ----------------------
+        // ---------------------- BOTÓN: CERRAR ----------------------
         JButton cerrarBtn = new JButton("Cerrar");
         cerrarBtn.setBackground(new Color(220, 53, 69)); // Rojo Bootstrap
         cerrarBtn.setForeground(Color.WHITE);

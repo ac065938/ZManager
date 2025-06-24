@@ -18,15 +18,12 @@ public class Administracion extends JFrame {
         setIconImage(icon);
 
         // -------------------- MENÚ SUPERIOR --------------------
-        // Menú principal
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Color.WHITE);
         setJMenuBar(menuBar);
 
-        // Estilo común
         Dimension buttonSize = new Dimension(80, 60);
 
-        // -------------------- BOTÓN: VENTAS --------------------
         JButton ventasBtn = new JButton("Ventas", new ImageIcon(getClass().getResource("/ventas.png")));
         ventasBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         ventasBtn.setPreferredSize(new Dimension(80, 73));
@@ -37,7 +34,6 @@ public class Administracion extends JFrame {
         ventasBtn.addActionListener(e -> Navegador.irA(this, Ventas.class));
         menuBar.add(ventasBtn);
 
-        // -------------------- BOTÓN: ALMACEN --------------------
         JButton adminBtn = new JButton("Almacen", new ImageIcon(getClass().getResource("/almacen.png")));
         adminBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         adminBtn.setPreferredSize(new Dimension(80, 73));
@@ -48,7 +44,6 @@ public class Administracion extends JFrame {
         adminBtn.addActionListener(e -> Navegador.irA(this, Almacen.class));
         menuBar.add(adminBtn);
 
-        // -------------------- BOTÓN: BASE DE DATOS --------------------
         JButton configBtn = new JButton("BD", new ImageIcon(getClass().getResource("/BD.png")));
         configBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         configBtn.setPreferredSize(new Dimension(80, 73));
@@ -64,7 +59,6 @@ public class Administracion extends JFrame {
         configBtn.addActionListener(e -> menuConfig.show(configBtn, 0, configBtn.getHeight()));
         menuBar.add(configBtn);
 
-        //BOTON CERRAR SESION - REINGRESO
         JButton cerrarSesionBtn = new JButton("Cerrar", new ImageIcon(getClass().getResource("/cerrar.png")));
         cerrarSesionBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         cerrarSesionBtn.setPreferredSize(new Dimension(80, 73));
@@ -80,14 +74,13 @@ public class Administracion extends JFrame {
                 JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                this.dispose(); // Cierra la ventana actual
-                MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
+                this.dispose();
+                MainApp.mostrarLogin();
             }
         });
         menuBar.add(cerrarSesionBtn);
 
-        
-        //CONEXIÓN CON DBCONNETCION
+        // -------------------- CONEXIÓN BD --------------------
         JLabel estadoBD = new JLabel();
         estadoBD.setFont(new Font("Segoe UI", Font.BOLD, 12));
         estadoBD.setOpaque(true);
@@ -95,24 +88,15 @@ public class Administracion extends JFrame {
 
         if (DBConnection.estaConectado()) {
             estadoBD.setText("Conectado a BD");
-            estadoBD.setBackground(new Color(0, 153, 51));  // Verde
+            estadoBD.setBackground(new Color(0, 153, 51));
             estadoBD.setForeground(Color.WHITE);
         } else {
             estadoBD.setText("Sin conexión a BD");
-            estadoBD.setBackground(new Color(204, 0, 0));   // Rojo
+            estadoBD.setBackground(new Color(204, 0, 0));
             estadoBD.setForeground(Color.WHITE);
         }
 
         getContentPane().add(estadoBD, BorderLayout.SOUTH);
-
-        
-        menuBar.add(cerrarSesionBtn);
-
-        // -------------------- RIBBON --------------------
-        JToolBar ribbon = new JToolBar();
-        ribbon.setFloatable(false);
-        ribbon.setLayout(new FlowLayout(FlowLayout.LEFT));
-        ribbon.setBackground(Color.WHITE);
 
         // -------------------- ACCIONES --------------------
         JPanel accionesPanel = new JPanel(new FlowLayout());
@@ -132,22 +116,41 @@ public class Administracion extends JFrame {
         btnConexiones.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnConexiones.setBackground(Color.WHITE);
         btnConexiones.addActionListener(e -> {
-            // Create an instance of your ConexionesBD class
             ConexionesBD conexionesBDFrame = new ConexionesBD(); 
-            // Make the frame visible
             conexionesBDFrame.setVisible(true);
-            // Optional: If this button is part of another frame that should be hidden, uncomment the next line
-            // this.dispose(); 
         });
 
         accionesPanel.add(btnPerfiles);
         accionesPanel.add(btnConexiones);
 
+        // -------------------- RIBBON --------------------
+        JToolBar ribbon = new JToolBar();
+        ribbon.setFloatable(false);
+        ribbon.setLayout(new FlowLayout(FlowLayout.LEFT));
+        ribbon.setBackground(Color.WHITE);
         ribbon.add(accionesPanel);
-        getContentPane().add(ribbon, BorderLayout.NORTH);
+
+        // -------------------- CONTENEDOR SUPERIOR --------------------
+        JPanel contenedorSuperior = new JPanel();
+        contenedorSuperior.setLayout(new BoxLayout(contenedorSuperior, BoxLayout.Y_AXIS));
+
+        JPanel panelReloj = new JPanel(new BorderLayout());
+        panelReloj.setBackground(Color.WHITE);
+        panelReloj.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
+
+        RelojMexico reloj = new RelojMexico();
+        reloj.setText("Hora: 12:22:16");
+        reloj.setForeground(new Color(0, 0, 0));
+        reloj.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        reloj.setHorizontalAlignment(SwingConstants.LEFT);
+        panelReloj.add(reloj, BorderLayout.WEST);
+
+        contenedorSuperior.add(panelReloj);
+        contenedorSuperior.add(ribbon);
+
+        getContentPane().add(contenedorSuperior, BorderLayout.NORTH);
     }
 
-    
     public static void mostrar() {
         SwingUtilities.invokeLater(() -> {
             Administracion ventana = new Administracion();
