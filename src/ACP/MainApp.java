@@ -4,21 +4,23 @@ import javax.swing.*;
 
 public class MainApp {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Login loginWindow = new Login();
+        SwingUtilities.invokeLater(() -> mostrarLogin());
+    }
 
-            loginWindow.addLoginListener(e -> {
-                String usuario = loginWindow.getUsuarioSeleccionado();
+    public static void mostrarLogin() {
+        Login loginWindow = new Login();
 
-                if (usuario != null && !usuario.trim().isEmpty()) {
-                    loginWindow.dispose();
-                    Inicio.mostrar(null); // Mostrar ventana intermedia con botones
-                } else {
-                    JOptionPane.showMessageDialog(loginWindow, "Debes seleccionar un usuario.");
-                }
-            });
+        loginWindow.addLoginListener(e -> {
+            String usuario = loginWindow.getUsuarioSeleccionado();
 
-            loginWindow.setVisible(true);
+            if (usuario != null && !usuario.trim().isEmpty()) {
+                loginWindow.dispose();
+                Inicio.mostrar(loginWindow);  // O Almacen.mostrar() si no usas Inicio
+            } else {
+                JOptionPane.showMessageDialog(loginWindow, "Debes seleccionar un usuario.");
+            }
         });
+
+        loginWindow.setVisible(true);
     }
 }

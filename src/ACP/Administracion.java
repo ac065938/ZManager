@@ -64,7 +64,7 @@ public class Administracion extends JFrame {
         configBtn.addActionListener(e -> menuConfig.show(configBtn, 0, configBtn.getHeight()));
         menuBar.add(configBtn);
 
-        // -------------------- BOTÓN: CERRAR SESIÓN --------------------
+        //BOTON CERRAR SESION - REINGRESO
         JButton cerrarSesionBtn = new JButton("Cerrar", new ImageIcon(getClass().getResource("/cerrar.png")));
         cerrarSesionBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         cerrarSesionBtn.setPreferredSize(new Dimension(80, 73));
@@ -79,8 +79,13 @@ public class Administracion extends JFrame {
                 "Confirmar cierre",
                 JOptionPane.YES_NO_OPTION
             );
-            if (confirm == JOptionPane.YES_OPTION) System.exit(0);
+            if (confirm == JOptionPane.YES_OPTION) {
+                this.dispose(); // Cierra la ventana actual
+                MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
+            }
         });
+        menuBar.add(cerrarSesionBtn);
+
         
         //CONEXIÓN CON DBCONNETCION
         JLabel estadoBD = new JLabel();

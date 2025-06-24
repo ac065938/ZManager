@@ -57,7 +57,7 @@ public class ConexionesBD extends JDialog {
         // Botón Guardar
         JButton guardarBtn = new JButton("Guardar Conexión");
         guardarBtn.setBackground(new Color(0, 123, 255));
-        guardarBtn.setForeground(Color.WHITE);
+        guardarBtn.setForeground(new Color(0, 0, 0));
         guardarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         guardarBtn.setFocusPainted(false);
         guardarBtn.setPreferredSize(new Dimension(180, 35));

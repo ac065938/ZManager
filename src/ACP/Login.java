@@ -81,7 +81,7 @@ public class Login extends JFrame {
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         loginButton.setBackground(new Color(0x006C9D));
-        loginButton.setForeground(Color.WHITE);
+        loginButton.setForeground(new Color(0, 0, 0));
         loginButton.setFocusPainted(false);
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         loginButton.setPreferredSize(new Dimension(100, 35));

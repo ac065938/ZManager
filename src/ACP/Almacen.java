@@ -173,18 +173,18 @@ public class Almacen extends JFrame {
         estadoBD.setOpaque(true);
         estadoBD.setHorizontalAlignment(SwingConstants.CENTER);
         estadoBD.setPreferredSize(new Dimension(200, 30));
-        actualizarEstadoBD(estadoBD); // <-- actualiza colores y texto
+        actualizarEstadoBD(estadoBD); // <-- actualiza_colores_y_texto
         getContentPane().add(estadoBD, BorderLayout.SOUTH);
 
-        // Timer para actualizar automáticamente cada 10s
+        // Timer_para_actualizar_automáticamente_cada_10s
         new javax.swing.Timer(10000, e -> actualizarEstadoBD(estadoBD)).start();
 
-        //Menú principal
+        //Menú_principal
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(Color.WHITE);
         setJMenuBar(menuBar);
 
-        // Estilo común
+        // Estilo_común
         Dimension buttonSize = new Dimension(80, 60);
 
         // -------------------- BOTÓN: VENTAS --------------------
@@ -225,7 +225,7 @@ public class Almacen extends JFrame {
         configBtn.addActionListener(e -> menuConfig.show(configBtn, 0, configBtn.getHeight()));
         menuBar.add(configBtn);
 
-        // -------------------- BOTÓN: CERRAR SESIÓN --------------------
+        //BOTON CERRAR SESION - REINGRESO
         JButton cerrarSesionBtn = new JButton("Cerrar", new ImageIcon(getClass().getResource("/cerrar.png")));
         cerrarSesionBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
         cerrarSesionBtn.setPreferredSize(new Dimension(80, 73));
@@ -240,7 +240,10 @@ public class Almacen extends JFrame {
                 "Confirmar cierre",
                 JOptionPane.YES_NO_OPTION
             );
-            if (confirm == JOptionPane.YES_OPTION) System.exit(0);
+            if (confirm == JOptionPane.YES_OPTION) {
+                this.dispose(); // Cierra la ventana actual
+                MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
+            }
         });
         menuBar.add(cerrarSesionBtn);
 

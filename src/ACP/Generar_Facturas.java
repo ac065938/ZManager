@@ -86,9 +86,7 @@ public class Generar_Facturas extends JDialog {
         contentPanel.add(vendedorField, gbc);
 
         currentRow++;
-        
-        
-
+       
         // Cliente y R. F. C.
         currentRow = addRow(contentPanel, currentRow, "Cliente", "", "R. F. C.", "");
 
@@ -152,9 +150,9 @@ public class Generar_Facturas extends JDialog {
         contentPanel.add(activaCheckBox, gbcCheck);
         currentRow++;
         
-     // ---------------------- BOTÓN: GUARDAR ----------------------
+        //---------------------- BOTÓN: GUARDAR ----------------------
         JButton guardarBtn = new JButton("Guardar");
-        guardarBtn.setBackground(new Color(40, 167, 69)); // Verde Bootstrap
+        guardarBtn.setBackground(new Color(40, 167, 69)); // Verde_Bootstrap
         guardarBtn.setForeground(Color.WHITE);
         guardarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         guardarBtn.setPreferredSize(new Dimension(100, 35));
@@ -203,7 +201,7 @@ public class Generar_Facturas extends JDialog {
      * @param val1   Valor inicial del primer campo de texto.
      * @param label2 Texto de la segunda etiqueta.
      * @param val2   Valor inicial del segundo campo de texto.
-     * @return La siguiente fila disponible.
+     * @return La_siguiente_fila_disponible.
      */
     private int addRow(JPanel panel, int y, String label1, String val1, String label2, String val2) {
         GridBagConstraints gbc = new GridBagConstraints();

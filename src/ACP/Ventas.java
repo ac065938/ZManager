@@ -52,20 +52,29 @@ public class Ventas extends JFrame {
         seleccionarBD.addActionListener(e -> SelectorBaseDatos.mostrarDialogo(this));
         opcionesMenu.add(seleccionarBD);
 
-        JMenuItem cerrarSesion = new JMenuItem("Cerrar sesión");
-        cerrarSesion.addActionListener(e -> {
+        //BOTON CERRAR SESION - REINGRESO
+        JButton cerrarSesionBtn = new JButton("Cerrar", new ImageIcon(getClass().getResource("/cerrar.png")));
+        cerrarSesionBtn.setFont(new Font("Tahoma", Font.BOLD, 11));
+        cerrarSesionBtn.setPreferredSize(new Dimension(80, 73));
+        cerrarSesionBtn.setToolTipText("Cerrar sesión");
+        cerrarSesionBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        cerrarSesionBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        cerrarSesionBtn.setBackground(Color.WHITE);
+        cerrarSesionBtn.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Estás seguro que deseas cerrar sesión?",
-                    "Confirmar cierre",
-                    JOptionPane.YES_NO_OPTION
+                this,
+                "¿Estás seguro que deseas cerrar sesión?",
+                "Confirmar cierre",
+                JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                System.exit(0);
+                this.dispose(); // Cierra la ventana actual
+                MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
             }
         });
-        opcionesMenu.addSeparator();
-        opcionesMenu.add(cerrarSesion);
+        menuBar.add(cerrarSesionBtn);
+
+
 
         opcionesButton.addActionListener(e -> opcionesMenu.show(opcionesButton, 0, opcionesButton.getHeight()));
 
