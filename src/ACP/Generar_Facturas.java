@@ -7,17 +7,16 @@ public class Generar_Facturas extends JDialog {
 
     public Generar_Facturas(JFrame parent) {
         super(parent, "Facturas", true);
-        // Dimensiones ajustadas para un mejor espaciado y apariencia general
+
         setSize(794, 660);
         setLocationRelativeTo(parent);
-        // Asegúrate de que la imagen LOGOZM.png esté en la ruta correcta del classpath
+
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png")));
 
         // Panel principal con GridBagLayout para un control preciso del diseño
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBackground(Color.WHITE);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30)); // No debería interferir
-
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         
         // Borde vacío para un poco de espacio alrededor de los componentes
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
@@ -94,10 +93,7 @@ public class Generar_Facturas extends JDialog {
 
      currentRow++;
 
-     // Para "Cliente" y "R.F.C.", usa addRow porque no agregas manualmente esos campos:
      currentRow = addRow(contentPanel, currentRow, "Cliente", "", "R. F. C.", "");
-
-     // Para la fila "Importe" y "Tipo factura", hazlo manualmente:
 
      GridBagConstraints gbcImporteLabel = new GridBagConstraints();
      gbcImporteLabel.gridx = 0;
@@ -136,7 +132,6 @@ public class Generar_Facturas extends JDialog {
 
      currentRow++;
 
-     // Luego continúa con addRow para las filas restantes, por ejemplo:
      currentRow = addRow(contentPanel, currentRow, "Descto", "", "Moneda", "");
      currentRow = addRow(contentPanel, currentRow, "Tipo de cambio", "", "Sub-Total", "");
      currentRow = addRow(contentPanel, currentRow, "I. V. A.", "", "Total", "");
@@ -164,12 +159,12 @@ public class Generar_Facturas extends JDialog {
 
         //---------------------- BOTÓN: GUARDAR ----------------------
         JButton guardarBtn = new JButton("Guardar");
-        guardarBtn.setBackground(new Color(40, 167, 69)); // Verde Bootstrap
-        guardarBtn.setForeground(Color.BLACK);
         guardarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        guardarBtn.setBackground(new Color(40, 167, 69));
+        guardarBtn.setForeground(Color.BLACK);
         guardarBtn.setPreferredSize(new Dimension(100, 35));
-        guardarBtn.setFocusPainted(false); // Eliminar el contorno de enfoque
-        guardarBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Borde visible
+        guardarBtn.setFocusPainted(false); 
+        guardarBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         guardarBtn.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Datos de factura guardados correctamente.");
         });
@@ -177,16 +172,15 @@ public class Generar_Facturas extends JDialog {
 
         //---------------------- BOTÓN: CERRAR ----------------------
         JButton cerrarBtn = new JButton("Cerrar");
-        cerrarBtn.setBackground(new Color(220, 53, 69)); // Rojo Bootstrap
-        cerrarBtn.setForeground(Color.BLACK); // Cambiar a blanco para mejor contraste
+        cerrarBtn.setBackground(new Color(220, 53, 69));
+        cerrarBtn.setForeground(Color.BLACK);
         cerrarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         cerrarBtn.setPreferredSize(new Dimension(100, 35));
-        cerrarBtn.setFocusPainted(false); // Eliminar el contorno de enfoque
-        cerrarBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Borde visible
+        cerrarBtn.setFocusPainted(false); 
+        cerrarBtn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); 
         cerrarBtn.addActionListener(e -> dispose());
         buttonPanel.add(cerrarBtn);
 
-        // Agregar el panel de botones al panel de contenido
         GridBagConstraints gbcButtonPanel = new GridBagConstraints();
         gbcButtonPanel.gridx = 0;
         gbcButtonPanel.gridy = currentRow;
@@ -195,55 +189,51 @@ public class Generar_Facturas extends JDialog {
         gbcButtonPanel.insets = new Insets(15, 8, 0, 8);
         contentPanel.add(buttonPanel, gbcButtonPanel);
 
-        // Envuelve_el_panel_de_contenido_en_un_JScrollPane_para_que_sea_desplazable
         JScrollPane scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBorder(null); // Elimina_el_borde_del_scroll_pane
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Velocidad_de_desplazamiento
+        scrollPane.setBorder(null); 
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); 
         setContentPane(scrollPane);
     }
 
     private int addRow(JPanel panel, int y, String label1, String val1, String label2, String val2) {
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8); // Espaciado consistente
+        gbc.insets = new Insets(8, 8, 8, 8); 
         gbc.gridy = y;
 
-        // Primer par de etiqueta y campo de texto
         if (!label1.isEmpty()) {
             gbc.gridx = 0;
-            gbc.anchor = GridBagConstraints.EAST; // Alinea la etiqueta a la derecha
+            gbc.anchor = GridBagConstraints.EAST; 
             panel.add(new JLabel(label1 + ":"), gbc);
 
             gbc.gridx = 1;
-            gbc.fill = GridBagConstraints.HORIZONTAL; // El campo de texto se expande
-            gbc.weightx = 0.5; // Asigna peso para distribución horizontal
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 0.5; 
             JTextField field1 = createStyledTextField(val1);
             panel.add(field1, gbc);
         }
 
-        // Segundo par de etiqueta y campo de texto
         if (!label2.isEmpty()) {
             gbc.gridx = 2;
-            gbc.fill = GridBagConstraints.NONE; // No expandir horizontalmente
-            gbc.anchor = GridBagConstraints.EAST; // Alinea la etiqueta a la derecha
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.anchor = GridBagConstraints.EAST;
             panel.add(new JLabel(label2 + ":"), gbc);
 
             gbc.gridx = 3;
-            gbc.fill = GridBagConstraints.HORIZONTAL; // El campo de texto se expande
-            gbc.weightx = 0.5; // Asigna peso
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 0.5;
             JTextField field2 = createStyledTextField(val2);
             panel.add(field2, gbc);
         }
 
-        return y + 1; // Retorna la siguiente fila disponible
+        return y + 1;
     }
-
 
     private JTextField createStyledTextField(String text) {
         JTextField field = new JTextField(text);
-        field.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Fuente y tamaño consistente
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), // Borde más suave
-            BorderFactory.createEmptyBorder(5, 8, 5, 8) // Padding interno
+            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)
         ));
         return field;
     }

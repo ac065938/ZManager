@@ -84,14 +84,13 @@ public class FormularioCliente extends JDialog {
         contentPanel.add(statusCheck, cCheck);
         currentRow++;
 
-        // Panel para botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         panelBotones.setBackground(Color.WHITE);
 
         JButton guardarBtn = new JButton("Guardar");
         guardarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        guardarBtn.setBackground(new Color(40, 167, 69)); // Verde sólido
-        guardarBtn.setForeground(Color.WHITE);            // Texto blanco
+        guardarBtn.setBackground(new Color(40, 167, 69));
+        guardarBtn.setForeground(Color.WHITE);           
         guardarBtn.setFocusPainted(false);
         guardarBtn.setBorderPainted(false);
         guardarBtn.setOpaque(true);
@@ -101,7 +100,7 @@ public class FormularioCliente extends JDialog {
 
         JButton cerrarBtn = new JButton("Cerrar");
         cerrarBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        cerrarBtn.setBackground(new Color(108, 117, 125)); // Gris elegante estilo Bootstrap
+        cerrarBtn.setBackground(new Color(108, 117, 125));
         cerrarBtn.setForeground(Color.WHITE);
         cerrarBtn.setFocusPainted(false);
         cerrarBtn.setBorderPainted(false);
@@ -123,7 +122,6 @@ public class FormularioCliente extends JDialog {
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         setContentPane(scroll);
-
 
     }
 

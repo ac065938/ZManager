@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.FileOutputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 // Importar_Apache POI
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -38,7 +40,7 @@ public class Almacen extends JFrame {
         ribbon.setFloatable(false);
         ribbon.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        // ---------- Buscar_Producto ----------
+     // ---------- Buscar_Producto ----------
         JPanel productoBusquedaPanel = new JPanel(new BorderLayout());
         productoBusquedaPanel.setBackground(new Color(255, 255, 255));
         productoBusquedaPanel.setPreferredSize(new Dimension(210, 107));
@@ -46,7 +48,12 @@ public class Almacen extends JFrame {
 
         JPanel filaSKUProducto = new JPanel(new GridLayout(1, 2, 5, 0));
 
+        // Primero declarar los campos
         JTextField campoSkuProducto = new JTextField("%SKU%");
+        JTextField campoFiltroProducto = new JTextField("%Filtro%");
+        JTextField campoCaracteristicas = new JTextField("Caracteristicas");
+
+        // Luego agregar sus focus listeners
         campoSkuProducto.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (campoSkuProducto.getText().equals("%SKU%")) campoSkuProducto.setText("");
@@ -57,7 +64,6 @@ public class Almacen extends JFrame {
             }
         });
 
-        JTextField campoFiltroProducto = new JTextField("%Filtro%");
         campoFiltroProducto.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (campoFiltroProducto.getText().equals("%Filtro%")) campoFiltroProducto.setText("");
@@ -68,11 +74,6 @@ public class Almacen extends JFrame {
             }
         });
 
-        filaSKUProducto.add(campoSkuProducto);
-        filaSKUProducto.add(campoFiltroProducto);
-
-        //Campo_de_características_corregido
-        JTextField campoCaracteristicas = new JTextField("Caracteristicas");
         campoCaracteristicas.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (campoCaracteristicas.getText().equals("Caracteristicas")) campoCaracteristicas.setText("");
@@ -83,9 +84,25 @@ public class Almacen extends JFrame {
             }
         });
 
+        // Ahora ya puedes usar los tres campos en cualquier listener
+        campoSkuProducto.addActionListener(e -> {
+            buscarProducto(campoSkuProducto.getText(), campoFiltroProducto.getText(), campoCaracteristicas.getText());
+        });
+
+        campoFiltroProducto.addActionListener(e -> {
+            buscarProducto(campoSkuProducto.getText(), campoFiltroProducto.getText(), campoCaracteristicas.getText());
+        });
+
+        campoCaracteristicas.addActionListener(e -> {
+            buscarProducto(campoSkuProducto.getText(), campoFiltroProducto.getText(), campoCaracteristicas.getText());
+        });
+
+        // Agregarlos al panel
+        filaSKUProducto.add(campoSkuProducto);
+        filaSKUProducto.add(campoFiltroProducto);
+
         productoBusquedaPanel.add(filaSKUProducto, BorderLayout.NORTH);
         productoBusquedaPanel.add(campoCaracteristicas, BorderLayout.CENTER);
-
         JCheckBox limpiarAntesCheckbox = new JCheckBox("Limpiar antes de cargar información");
         limpiarAntesCheckbox.setBackground(new Color(255, 255, 255));
         limpiarAntesCheckbox.setSelected(true);
@@ -275,25 +292,29 @@ public class Almacen extends JFrame {
         try (org.apache.poi.xssf.usermodel.XSSFWorkbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
             org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Inventario");
 
-            // Crear_encabezados_incluso_si_no_hay_datos
+            // Crear fila de encabezados con nombres de columna
             org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
-            for (int i = 0; i < table.getColumnCount(); i++) {
-                org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
-                cell.setCellValue(table.getColumnName(i));
+            for (int col = 0; col < table.getColumnCount(); col++) {
+                org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(col);
+                cell.setCellValue(table.getColumnName(col));
             }
 
-            // Si_hay_datos_agregarlos
-            if (table.getRowCount() > 0) {
-                for (int row = 0; row < table.getRowCount(); row++) {
-                    org.apache.poi.ss.usermodel.Row excelRow = sheet.createRow(row + 1);
-                    for (int col = 0; col < table.getColumnCount(); col++) {
-                        Object value = table.getValueAt(row, col);
-                        org.apache.poi.ss.usermodel.Cell cell = excelRow.createCell(col);
-                        cell.setCellValue(value != null ? value.toString() : "");
-                    }
+            // Escribir los datos actuales de la tabla
+            for (int row = 0; row < table.getRowCount(); row++) {
+                org.apache.poi.ss.usermodel.Row excelRow = sheet.createRow(row + 1);
+                for (int col = 0; col < table.getColumnCount(); col++) {
+                    Object value = table.getValueAt(row, col);
+                    org.apache.poi.ss.usermodel.Cell cell = excelRow.createCell(col);
+                    cell.setCellValue(value != null ? value.toString() : "");
                 }
             }
 
+            // Ajustar ancho de columnas para mejor lectura
+            for (int col = 0; col < table.getColumnCount(); col++) {
+                sheet.autoSizeColumn(col);
+            }
+
+            // Guardar archivo
             try (java.io.FileOutputStream fos = new java.io.FileOutputStream(path)) {
                 workbook.write(fos);
             }
@@ -304,6 +325,7 @@ public class Almacen extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al exportar: " + ex.getMessage());
         }
     }
+
 
     private void actualizarEstadoBD(JLabel estadoBD) {
         if (DBConnection.estaConectado()) {
@@ -318,7 +340,73 @@ public class Almacen extends JFrame {
     }
 
     
+    private void cargarProductosDesdeBD(String codigoFiltro, String textoFiltro, String descripcion) {
+        DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+
+        if (modelo.getRowCount() > 0) {
+            modelo.setRowCount(0);
+        }
+
+        StringBuilder sql = new StringBuilder("SELECT codigo, descripcion, linea, precio, ventas, almacen, escaner, medida, desctop, descont FROM almacen WHERE 1=1");
+
+        if (!codigoFiltro.trim().isEmpty() && !codigoFiltro.equals("%SKU%")) {
+            sql.append(" AND codigo LIKE ?");
+        }
+        if (!textoFiltro.trim().isEmpty() && !textoFiltro.equals("%Filtro%")) {
+            sql.append(" AND descripcion LIKE ?");
+        }
+        if (!descripcion.trim().isEmpty() && !descripcion.equals("Caracteristicas")) {
+            sql.append(" AND descripcion LIKE ?");
+        }
+
+        try (PreparedStatement stmt = DBConnection.conectar().prepareStatement(sql.toString())) {
+            int index = 1;
+
+            if (!codigoFiltro.trim().isEmpty() && !codigoFiltro.equals("%SKU%")) {
+                stmt.setString(index++, "%" + codigoFiltro + "%");
+            }
+            if (!textoFiltro.trim().isEmpty() && !textoFiltro.equals("%Filtro%")) {
+                stmt.setString(index++, "%" + textoFiltro + "%");
+            }
+            if (!descripcion.trim().isEmpty() && !descripcion.equals("Caracteristicas")) {
+                stmt.setString(index++, "%" + descripcion + "%");
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            int contador = 0;
+
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getString("codigo"),
+                    rs.getString("descripcion"),
+                    rs.getString("linea"),
+                    rs.getDouble("precio"),
+                    rs.getInt("ventas"),
+                    rs.getInt("almacen"),
+                    rs.getString("escaner"),
+                    rs.getString("medida"),
+                    rs.getDouble("desctop"),
+                    rs.getBoolean("descont") ? "Sí" : "No"
+                };
+                modelo.addRow(fila);
+                contador++;
+            }
+
+            if (contador == 0) {
+                JOptionPane.showMessageDialog(this, "No se encontraron productos con los filtros ingresados.");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al consultar la base de datos: " + ex.getMessage());
+        }
+    }
+
     
+    private void buscarProducto(String sku, String filtro, String caracteristicas) {
+        cargarProductosDesdeBD(sku, filtro, caracteristicas);
+    }
+
     public static void mostrar() {
         SwingUtilities.invokeLater(() -> {
             Almacen ventana = new Almacen();
