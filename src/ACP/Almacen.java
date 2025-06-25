@@ -11,6 +11,9 @@ import java.awt.event.FocusEvent;
 import java.io.FileOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
+import java.util.ArrayList;
+
 
 // Importar_Apache POI
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -340,36 +343,34 @@ public class Almacen extends JFrame {
     }
 
     
-    private void cargarProductosDesdeBD(String codigoFiltro, String textoFiltro, String descripcion) {
+    private void cargarProductosDesdeBD(String codigoFiltro, String textoFiltro, String descripcionFiltro) {
         DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+        modelo.setRowCount(0); // limpiar tabla
 
-        if (modelo.getRowCount() > 0) {
-            modelo.setRowCount(0);
-        }
+        StringBuilder sql = new StringBuilder(
+            "SELECT codigo, descripcion, linea, precio, ventas, almacen, escaner, medida, desctop, descont FROM almacen WHERE 1=1"
+        );
 
-        StringBuilder sql = new StringBuilder("SELECT codigo, descripcion, linea, precio, ventas, almacen, escaner, medida, desctop, descont FROM almacen WHERE 1=1");
+        List<String> filtros = new ArrayList<>();
 
-        if (!codigoFiltro.trim().isEmpty() && !codigoFiltro.equals("%SKU%")) {
+        if (!codigoFiltro.trim().isEmpty() && !codigoFiltro.equalsIgnoreCase("%SKU%")) {
             sql.append(" AND codigo LIKE ?");
+            filtros.add("%" + codigoFiltro.trim() + "%");
         }
-        if (!textoFiltro.trim().isEmpty() && !textoFiltro.equals("%Filtro%")) {
+
+        if (!textoFiltro.trim().isEmpty() && !textoFiltro.equalsIgnoreCase("%Filtro%")) {
             sql.append(" AND descripcion LIKE ?");
+            filtros.add("%" + textoFiltro.trim() + "%");
         }
-        if (!descripcion.trim().isEmpty() && !descripcion.equals("Caracteristicas")) {
-            sql.append(" AND descripcion LIKE ?");
+
+        if (!descripcionFiltro.trim().isEmpty() && !descripcionFiltro.equalsIgnoreCase("Caracteristicas")) {
+            sql.append(" AND linea LIKE ?");
+            filtros.add("%" + descripcionFiltro.trim() + "%");
         }
 
         try (PreparedStatement stmt = DBConnection.conectar().prepareStatement(sql.toString())) {
-            int index = 1;
-
-            if (!codigoFiltro.trim().isEmpty() && !codigoFiltro.equals("%SKU%")) {
-                stmt.setString(index++, "%" + codigoFiltro + "%");
-            }
-            if (!textoFiltro.trim().isEmpty() && !textoFiltro.equals("%Filtro%")) {
-                stmt.setString(index++, "%" + textoFiltro + "%");
-            }
-            if (!descripcion.trim().isEmpty() && !descripcion.equals("Caracteristicas")) {
-                stmt.setString(index++, "%" + descripcion + "%");
+            for (int i = 0; i < filtros.size(); i++) {
+                stmt.setString(i + 1, filtros.get(i));
             }
 
             ResultSet rs = stmt.executeQuery();
