@@ -1,4 +1,3 @@
-
 package ACP;
 
 import java.sql.Connection;
@@ -11,12 +10,23 @@ public class DBConnection {
     public static Connection conectar() {
         if (conexion == null) {
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                conexion = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/bd_prueba?useSSL=false&serverTimezone=America/Mexico_City", // ⚠️ Cambia a tu nombre de BD real
-                    "root", // ⚠️ Cambia al usuario que estás usando
-                    "" // ⚠️ Cambia tu contraseña
-                );
+                // Cargar el driver de SQL Server
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+                String servidor = "ING\\SQLEXPRESS01"; 
+                String puerto = "1433";
+                String baseDeDatos = "bd_prueba";
+                String usuario = "sa";         
+                String contrasena = "ACP1!"; 
+
+                String connectionUrl = "jdbc:sqlserver://" + servidor + ":" + puerto + ";" +
+                        "databaseName=" + baseDeDatos + ";" +
+                        "encrypt=false;" +
+                        "trustServerCertificate=true;" +
+                        "user=" + usuario + ";" +
+                        "password=" + contrasena + ";";
+
+                conexion = DriverManager.getConnection(connectionUrl);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -31,5 +41,8 @@ public class DBConnection {
             return false;
         }
     }
-}
 
+    public static Connection getConnection() {
+        return conectar();
+    }
+}

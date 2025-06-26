@@ -22,7 +22,14 @@ import org.apache.poi.ss.usermodel.*;
 public class Almacen extends JFrame {
 
     private JLabel statusLabel;
-    private JTable table; // Tabla_a_nivel_de_clase
+    private JTable table; 
+    private JCheckBox cbDescuentos;
+    private JTextField campoSkuProducto;
+    private JTextField campoFiltroProducto;
+    private JTextField campoCaracteristicas;
+    private boolean ocultarDescontinuados = false;
+
+
 
     public Almacen() {
         setTitle("ZManager 2.0 - Almacén");
@@ -31,10 +38,9 @@ public class Almacen extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
         
-        // Carga la imagen desde el classpath
         Image icon = Toolkit.getDefaultToolkit()
                            .getImage(getClass().getResource("/LOGOZM.png"));
-        // Fija el icono de la ventana
+
         setIconImage(icon);
 
         // ---------- Barra_tipo_Ribbon ----------
@@ -52,11 +58,10 @@ public class Almacen extends JFrame {
         JPanel filaSKUProducto = new JPanel(new GridLayout(1, 2, 5, 0));
 
         // Primero declarar los campos
-        JTextField campoSkuProducto = new JTextField("%SKU%");
-        JTextField campoFiltroProducto = new JTextField("%Filtro%");
-        JTextField campoCaracteristicas = new JTextField("Caracteristicas");
+        campoSkuProducto = new JTextField("%SKU%");
+        campoFiltroProducto = new JTextField("%Filtro%");
+        campoCaracteristicas = new JTextField("Caracteristicas");
 
-        // Luego agregar sus focus listeners
         campoSkuProducto.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (campoSkuProducto.getText().equals("%SKU%")) campoSkuProducto.setText("");
@@ -87,19 +92,30 @@ public class Almacen extends JFrame {
             }
         });
 
-        // Ahora ya puedes usar los tres campos en cualquier listener
         campoSkuProducto.addActionListener(e -> {
             buscarProducto(campoSkuProducto.getText(), campoFiltroProducto.getText(), campoCaracteristicas.getText());
+            campoSkuProducto.setText("%SKU%");
+            campoFiltroProducto.setText("%Filtro%");
+            campoCaracteristicas.setText("Caracteristicas");
         });
 
         campoFiltroProducto.addActionListener(e -> {
             buscarProducto(campoSkuProducto.getText(), campoFiltroProducto.getText(), campoCaracteristicas.getText());
+            campoSkuProducto.setText("%SKU%");
+            campoFiltroProducto.setText("%Filtro%");
+            campoCaracteristicas.setText("Caracteristicas");
         });
 
         campoCaracteristicas.addActionListener(e -> {
             buscarProducto(campoSkuProducto.getText(), campoFiltroProducto.getText(), campoCaracteristicas.getText());
+            campoSkuProducto.setText("%SKU%");
+            campoFiltroProducto.setText("%Filtro%");
+            campoCaracteristicas.setText("Caracteristicas");
         });
+       
 
+        
+        
         // Agregarlos al panel
         filaSKUProducto.add(campoSkuProducto);
         filaSKUProducto.add(campoFiltroProducto);
@@ -118,12 +134,9 @@ public class Almacen extends JFrame {
         filtrosPanel.setPreferredSize(new Dimension(175, 105));
         filtrosPanel.setBorder(BorderFactory.createTitledBorder("Filtros"));
 
-        JCheckBox cbStock = new JCheckBox("Solo en existencia", false);
-        cbStock.setBackground(new Color(255, 255, 255));
-        JCheckBox cbDescuentos = new JCheckBox("Mostrar con descuento");
+        cbDescuentos = new JCheckBox("Mostrar con descuento");
         cbDescuentos.setBackground(new Color(255, 255, 255));
 
-        filtrosPanel.add(cbStock);
         filtrosPanel.add(cbDescuentos);
 
         ribbon.add(filtrosPanel);
@@ -169,6 +182,24 @@ public class Almacen extends JFrame {
             }
             
         });
+        
+        JButton btnOcultarDescontinuados = new JButton("Ocultar descontinuados");
+        btnOcultarDescontinuados.setBackground(new Color(255, 255, 255));
+        btnOcultarDescontinuados.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        filtrosPanel.add(btnOcultarDescontinuados);
+
+        btnOcultarDescontinuados.addActionListener(e -> {
+            DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+            
+            // Recorre de abajo hacia arriba para evitar conflictos al eliminar
+            for (int i = modelo.getRowCount() - 1; i >= 0; i--) {
+            	String estado = modelo.getValueAt(i, 9).toString();
+                if (estado.equalsIgnoreCase("Sí")) {
+                    modelo.removeRow(i);
+                }
+            }
+        });
+
 
         accionesPanel.add(readFileButton);
         accionesPanel.add(printLabelButton);
@@ -285,7 +316,7 @@ public class Almacen extends JFrame {
 
         // Agrega reloj y luego el ribbon original (el que ya contenía tus botones y estilos)
         contenedorSuperior.add(panelReloj);
-        contenedorSuperior.add(ribbon); // Asegúrate que este contenga todos tus botones
+        contenedorSuperior.add(ribbon); 
 
         getContentPane().add(contenedorSuperior, BorderLayout.NORTH);
         
@@ -295,14 +326,12 @@ public class Almacen extends JFrame {
         try (org.apache.poi.xssf.usermodel.XSSFWorkbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
             org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Inventario");
 
-            // Crear fila de encabezados con nombres de columna
             org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
             for (int col = 0; col < table.getColumnCount(); col++) {
                 org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(col);
                 cell.setCellValue(table.getColumnName(col));
             }
 
-            // Escribir los datos actuales de la tabla
             for (int row = 0; row < table.getRowCount(); row++) {
                 org.apache.poi.ss.usermodel.Row excelRow = sheet.createRow(row + 1);
                 for (int col = 0; col < table.getColumnCount(); col++) {
@@ -312,12 +341,10 @@ public class Almacen extends JFrame {
                 }
             }
 
-            // Ajustar ancho de columnas para mejor lectura
             for (int col = 0; col < table.getColumnCount(); col++) {
                 sheet.autoSizeColumn(col);
             }
 
-            // Guardar archivo
             try (java.io.FileOutputStream fos = new java.io.FileOutputStream(path)) {
                 workbook.write(fos);
             }
@@ -328,7 +355,6 @@ public class Almacen extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al exportar: " + ex.getMessage());
         }
     }
-
 
     private void actualizarEstadoBD(JLabel estadoBD) {
         if (DBConnection.estaConectado()) {
@@ -343,12 +369,12 @@ public class Almacen extends JFrame {
     }
 
     
-    private void cargarProductosDesdeBD(String codigoFiltro, String textoFiltro, String descripcionFiltro) {
+    private void cargarProductosDesdeBD(String codigoFiltro, String textoFiltro, String descripcionFiltro, boolean soloConDescuento, boolean ocultarDescontinuados) {
         DefaultTableModel modelo = (DefaultTableModel) table.getModel();
         modelo.setRowCount(0); // limpiar tabla
 
         StringBuilder sql = new StringBuilder(
-            "SELECT codigo, descripcion, linea, precio, ventas, almacen, escaner, medida, desctop, descont FROM almacen WHERE 1=1"
+            "SELECT codigo, descripcion, linea, precio, ventas, almacen, escaner, medida, descto, descont FROM almacen WHERE 1=1"
         );
 
         List<String> filtros = new ArrayList<>();
@@ -364,9 +390,19 @@ public class Almacen extends JFrame {
         }
 
         if (!descripcionFiltro.trim().isEmpty() && !descripcionFiltro.equalsIgnoreCase("Caracteristicas")) {
-            sql.append(" AND linea LIKE ?");
+            sql.append(" AND (linea LIKE ? OR descripcion LIKE ?)");
+            filtros.add("%" + descripcionFiltro.trim() + "%");
             filtros.add("%" + descripcionFiltro.trim() + "%");
         }
+
+        if (soloConDescuento) {
+            sql.append(" AND descto > 0");
+        }
+        
+        if (ocultarDescontinuados) {
+            sql.append(" AND descont = 0");
+        }
+
 
         try (PreparedStatement stmt = DBConnection.conectar().prepareStatement(sql.toString())) {
             for (int i = 0; i < filtros.size(); i++) {
@@ -383,10 +419,10 @@ public class Almacen extends JFrame {
                     rs.getString("linea"),
                     rs.getDouble("precio"),
                     rs.getInt("ventas"),
-                    rs.getInt("almacen"),
+                    rs.getString("almacen"),
                     rs.getString("escaner"),
                     rs.getString("medida"),
-                    rs.getDouble("desctop"),
+                    rs.getDouble("descto"),
                     rs.getBoolean("descont") ? "Sí" : "No"
                 };
                 modelo.addRow(fila);
@@ -403,10 +439,18 @@ public class Almacen extends JFrame {
         }
     }
 
-    
+
     private void buscarProducto(String sku, String filtro, String caracteristicas) {
-        cargarProductosDesdeBD(sku, filtro, caracteristicas);
+        cargarProductosDesdeBD(
+            sku,
+            filtro,
+            caracteristicas,
+            cbDescuentos.isSelected(),
+            ocultarDescontinuados // usa la bandera booleana
+
+        );
     }
+
 
     public static void mostrar() {
         SwingUtilities.invokeLater(() -> {
