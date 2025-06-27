@@ -9,18 +9,6 @@ public class MainApp {
 
     public static void mostrarLogin() {
         Login loginWindow = new Login();
-
-        loginWindow.addLoginListener(e -> {
-            String usuario = loginWindow.getUsuarioSeleccionado();
-
-            if (usuario != null && !usuario.trim().isEmpty()) {
-                loginWindow.dispose();
-                Inicio.mostrar(loginWindow);  // O Almacen.mostrar() si no usas Inicio
-            } else {
-                JOptionPane.showMessageDialog(loginWindow, "Debes seleccionar un usuario.");
-            }
-        });
-
         loginWindow.setVisible(true);
     }
 }

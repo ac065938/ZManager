@@ -23,11 +23,15 @@ public class Almacen extends JFrame {
 
     private JLabel statusLabel;
     private JTable table; 
-    private JCheckBox cbDescuentos;
+    private boolean mostrarConDescuento = false;
     private JTextField campoSkuProducto;
     private JTextField campoFiltroProducto;
     private JTextField campoCaracteristicas;
     private boolean ocultarDescontinuados = false;
+    private String ultimoSkuFiltro = "";
+    private String ultimoFiltroTexto = "";
+    private String ultimoCaracteristicas = "";
+
 
 
 
@@ -113,20 +117,12 @@ public class Almacen extends JFrame {
             campoCaracteristicas.setText("Caracteristicas");
         });
        
-
-        
-        
-        // Agregarlos al panel
         filaSKUProducto.add(campoSkuProducto);
         filaSKUProducto.add(campoFiltroProducto);
 
         productoBusquedaPanel.add(filaSKUProducto, BorderLayout.NORTH);
         productoBusquedaPanel.add(campoCaracteristicas, BorderLayout.CENTER);
-        JCheckBox limpiarAntesCheckbox = new JCheckBox("Limpiar antes de cargar información");
-        limpiarAntesCheckbox.setBackground(new Color(255, 255, 255));
-        limpiarAntesCheckbox.setSelected(true);
-        productoBusquedaPanel.add(limpiarAntesCheckbox, BorderLayout.SOUTH);
-
+        
         ribbon.add(productoBusquedaPanel);
         
         JPanel filtrosPanel = new JPanel(new GridLayout(2, 1));
@@ -134,10 +130,10 @@ public class Almacen extends JFrame {
         filtrosPanel.setPreferredSize(new Dimension(175, 105));
         filtrosPanel.setBorder(BorderFactory.createTitledBorder("Filtros"));
 
-        cbDescuentos = new JCheckBox("Mostrar con descuento");
-        cbDescuentos.setBackground(new Color(255, 255, 255));
-
-        filtrosPanel.add(cbDescuentos);
+        JButton btnConDescuento = new JButton("Solo descuentos");
+        btnConDescuento.setBackground(new Color(255, 255, 255));
+        btnConDescuento.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        filtrosPanel.add(btnConDescuento);
 
         ribbon.add(filtrosPanel);
 
@@ -163,6 +159,11 @@ public class Almacen extends JFrame {
         clearRecordsButton.setIcon(new ImageIcon(Almacen.class.getResource("/limpiar pantalla.png")));
         clearRecordsButton.setHorizontalTextPosition(SwingConstants.CENTER);
         clearRecordsButton.setVerticalTextPosition(SwingConstants.BOTTOM);
+        
+        clearRecordsButton.addActionListener(e -> {
+            DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+            modelo.setRowCount(0);
+        });
 
         JButton exportButton = new JButton("Exportar a Excel");
         exportButton.setBackground(new Color(255, 255, 255));
@@ -191,7 +192,6 @@ public class Almacen extends JFrame {
         btnOcultarDescontinuados.addActionListener(e -> {
             DefaultTableModel modelo = (DefaultTableModel) table.getModel();
             
-            // Recorre de abajo hacia arriba para evitar conflictos al eliminar
             for (int i = modelo.getRowCount() - 1; i >= 0; i--) {
             	String estado = modelo.getValueAt(i, 9).toString();
                 if (estado.equalsIgnoreCase("Sí")) {
@@ -199,6 +199,31 @@ public class Almacen extends JFrame {
                 }
             }
         });
+        
+        btnConDescuento.addActionListener(e -> {
+            mostrarConDescuento = !mostrarConDescuento; 
+
+            btnConDescuento.setText(mostrarConDescuento ? "Todos los productos" : "Solo descuentos");
+
+            // Si no hay filtros previos, usar los actuales (por primera vez)
+            if (ultimoSkuFiltro.isEmpty()) ultimoSkuFiltro = campoSkuProducto.getText().trim();
+            if (ultimoFiltroTexto.isEmpty()) ultimoFiltroTexto = campoFiltroProducto.getText().trim();
+            if (ultimoCaracteristicas.isEmpty()) ultimoCaracteristicas = campoCaracteristicas.getText().trim();
+
+            // Lógica para limpiar si los filtros tienen texto por defecto
+            if (ultimoSkuFiltro.equalsIgnoreCase("%SKU%")) ultimoSkuFiltro = "";
+            if (ultimoFiltroTexto.equalsIgnoreCase("%Filtro%")) ultimoFiltroTexto = "";
+            if (ultimoCaracteristicas.equalsIgnoreCase("Caracteristicas")) ultimoCaracteristicas = "";
+
+            cargarProductosDesdeBD(
+                ultimoSkuFiltro,
+                ultimoFiltroTexto,
+                ultimoCaracteristicas,
+                mostrarConDescuento,
+                ocultarDescontinuados
+            );
+        });
+
 
 
         accionesPanel.add(readFileButton);
@@ -359,11 +384,11 @@ public class Almacen extends JFrame {
     private void actualizarEstadoBD(JLabel estadoBD) {
         if (DBConnection.estaConectado()) {
             estadoBD.setText("Conectado a BD");
-            estadoBD.setBackground(new Color(0, 153, 51));  // Verde
+            estadoBD.setBackground(new Color(0, 153, 51));
             estadoBD.setForeground(Color.WHITE);
         } else {
             estadoBD.setText("Sin conexión a BD");
-            estadoBD.setBackground(new Color(204, 0, 0));   // Rojo
+            estadoBD.setBackground(new Color(204, 0, 0));
             estadoBD.setForeground(Color.WHITE);
         }
     }
@@ -371,8 +396,7 @@ public class Almacen extends JFrame {
     
     private void cargarProductosDesdeBD(String codigoFiltro, String textoFiltro, String descripcionFiltro, boolean soloConDescuento, boolean ocultarDescontinuados) {
         DefaultTableModel modelo = (DefaultTableModel) table.getModel();
-        modelo.setRowCount(0); // limpiar tabla
-
+        modelo.setRowCount(0); 
         StringBuilder sql = new StringBuilder(
             "SELECT codigo, descripcion, linea, precio, ventas, almacen, escaner, medida, descto, descont FROM almacen WHERE 1=1"
         );
@@ -441,16 +465,19 @@ public class Almacen extends JFrame {
 
 
     private void buscarProducto(String sku, String filtro, String caracteristicas) {
+        // Guardar los filtros usados
+        ultimoSkuFiltro = sku;
+        ultimoFiltroTexto = filtro;
+        ultimoCaracteristicas = caracteristicas;
         cargarProductosDesdeBD(
-            sku,
-            filtro,
-            caracteristicas,
-            cbDescuentos.isSelected(),
-            ocultarDescontinuados // usa la bandera booleana
+                sku,
+                filtro,
+                caracteristicas,
+                mostrarConDescuento,
+                ocultarDescontinuados
 
         );
     }
-
 
     public static void mostrar() {
         SwingUtilities.invokeLater(() -> {

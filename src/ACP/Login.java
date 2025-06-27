@@ -2,13 +2,15 @@ package ACP;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.io.*;
+import java.util.List;
 
 public class Login extends JFrame {
+    private static final long serialVersionUID = 1L;
     private JComboBox<String> usuariosCombo;
     private JButton loginButton;
+    private JButton btnNuevoUsuario;
     private JPasswordField txtPassword;
     private JCheckBox recordarUsuarioCheck;
 
@@ -17,11 +19,10 @@ public class Login extends JFrame {
     public Login() {
         setTitle("ZManager 2.0 - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(405, 301);
+        setSize(405, 340);
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Icono
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png"));
         setIconImage(icon);
 
@@ -42,10 +43,9 @@ public class Login extends JFrame {
         usuariosCombo.setBackground(Color.WHITE);
         usuariosCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         usuariosCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        usuariosCombo.setPreferredSize(new Dimension(200, 30)); // Tamaño preferido agregado para evitar cuadro raro
         mainPanel.add(usuariosCombo);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        cargarUsuarios(); //
 
         txtPassword = new JPasswordField("Contraseña");
         txtPassword.setBackground(Color.WHITE);
@@ -56,7 +56,7 @@ public class Login extends JFrame {
             public void focusGained(FocusEvent e) {
                 if (String.valueOf(txtPassword.getPassword()).equals("Contraseña")) {
                     txtPassword.setText("");
-                    txtPassword.setEchoChar('\u2022');
+                    txtPassword.setEchoChar('•');
                 }
             }
 
@@ -75,38 +75,44 @@ public class Login extends JFrame {
         recordarUsuarioCheck.setBackground(Color.WHITE);
         recordarUsuarioCheck.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         mainPanel.add(recordarUsuarioCheck);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         loginButton = new JButton("Ingresar");
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         loginButton.setBackground(new Color(0x006C9D));
-        loginButton.setForeground(new Color(0, 0, 0));
-        loginButton.setFocusPainted(false);
-        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        loginButton.setPreferredSize(new Dimension(100, 35));
+        loginButton.setForeground(Color.BLACK);
+        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         mainPanel.add(loginButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        btnNuevoUsuario = new JButton("Nuevo Usuario");
+        btnNuevoUsuario.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnNuevoUsuario.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnNuevoUsuario.setBackground(new Color(0xCCCCCC));
+        btnNuevoUsuario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        mainPanel.add(btnNuevoUsuario);
 
         getContentPane().add(mainPanel);
 
-        cargarUsuarioRecordado(); //Cargar_usuario_recordado_(si_existe)
+        // Importante: primero cargar todos los usuarios, luego el usuario recordado
+        cargarUsuariosDesdeSistema();
+        cargarUsuarioRecordado();
+
+        loginButton.addActionListener(e -> autenticarUsuario());
+        btnNuevoUsuario.addActionListener(e -> Perfiles.mostrar(this));
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
     }
 
-    private void cargarUsuarios() {
-        usuariosCombo.addItem("Selecciona usuario...");
-        String[] usuarios = {"Juan", "Pedro", "María", "Pepe"};
-        for (String usuario : usuarios) {
-            usuariosCombo.addItem(usuario);
-        }
-    }
-
     public String getUsuarioSeleccionado() {
         String seleccionado = (String) usuariosCombo.getSelectedItem();
-        return seleccionado != null && !seleccionado.equals("Selecciona usuario...") ? seleccionado : null;
+        if (seleccionado == null || seleccionado.trim().isEmpty() || seleccionado.equals("Selecciona usuario...")) {
+            return null;
+        }
+        return seleccionado.trim();
     }
 
     public String getPassword() {
@@ -114,24 +120,50 @@ public class Login extends JFrame {
         return pass.equals("Contraseña") ? "" : pass;
     }
 
-    public void addLoginListener(java.awt.event.ActionListener listener) {
-        loginButton.addActionListener(e -> {
-            if (recordarUsuarioCheck.isSelected()) {
-                guardarUsuarioRecordado(getUsuarioSeleccionado());
-            } else {
-                eliminarUsuarioRecordado();
-            }
-            listener.actionPerformed(e);
-        });
+    private void autenticarUsuario() {
+        String usuarioInput = getUsuarioSeleccionado();
+        String password = getPassword();
+
+        if (usuarioInput == null || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debes ingresar usuario y contraseña.");
+            return;
+        }
+
+        Usuario usuario = UsuarioDAO.obtenerUsuarioPorNombre(usuarioInput);
+        if (usuario == null) {
+            JOptionPane.showMessageDialog(this, "El usuario no existe.");
+            return;
+        }
+
+        String hashIngresado = Usuario.hashSHA256(password);
+        if (!usuario.getClaveHash().equalsIgnoreCase(hashIngresado)) {
+            JOptionPane.showMessageDialog(this, "Contraseña incorrecta.");
+            return;
+        }
+
+        if (!usuario.isActivo()) {
+            JOptionPane.showMessageDialog(this, "Usuario inactivo.");
+            return;
+        }
+
+        Session.usuario = usuario.getUsuario();
+        Session.perfil = usuario.getPerfil();
+
+        if (recordarUsuarioCheck.isSelected()) {
+            guardarUsuarioRecordado(usuario.getUsuario());
+        } else {
+            eliminarUsuarioRecordado();
+        }
+
+        dispose();
+        Almacen.mostrar();
     }
 
     private void guardarUsuarioRecordado(String usuario) {
-        if (usuario != null) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO_RECORDADO))) {
-                writer.write(usuario);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO_RECORDADO))) {
+            writer.write(usuario);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -139,15 +171,38 @@ public class Login extends JFrame {
         try (BufferedReader reader = new BufferedReader(new FileReader(ARCHIVO_RECORDADO))) {
             String recordado = reader.readLine();
             if (recordado != null) {
+                boolean existe = false;
                 for (int i = 0; i < usuariosCombo.getItemCount(); i++) {
                     if (usuariosCombo.getItemAt(i).equals(recordado)) {
-                        usuariosCombo.setSelectedIndex(i);
-                        recordarUsuarioCheck.setSelected(true);
+                        existe = true;
                         break;
                     }
                 }
+                if (existe) {
+                    usuariosCombo.setSelectedItem(recordado);
+                    recordarUsuarioCheck.setSelected(true);
+                }
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
+    }
+
+    private void cargarUsuariosDesdeSistema() {
+        usuariosCombo.removeAllItems();
+        usuariosCombo.addItem("Selecciona usuario...");
+
+        List<Usuario> usuarios = UsuarioDAO.obtenerUsuarios();
+        if (usuarios == null || usuarios.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay usuarios registrados. Crea uno nuevo.");
+            Perfiles.mostrar(this);
+            usuarios = UsuarioDAO.obtenerUsuarios();
+        }
+
+        for (Usuario u : usuarios) {
+            if (u.isActivo()) {
+                usuariosCombo.addItem(u.getUsuario());
+            }
+        }
     }
 
     private void eliminarUsuarioRecordado() {

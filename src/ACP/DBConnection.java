@@ -8,9 +8,9 @@ public class DBConnection {
     private static Connection conexion;
 
     public static Connection conectar() {
-        if (conexion == null) {
-            try {
-                // Cargar el driver de SQL Server
+        try {
+            // Si no existe o está cerrada, se crea una nueva
+            if (conexion == null || conexion.isClosed()) {
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
                 String servidor = "ING\\SQLEXPRESS01"; 
@@ -27,10 +27,12 @@ public class DBConnection {
                         "password=" + contrasena + ";";
 
                 conexion = DriverManager.getConnection(connectionUrl);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            conexion = null; // Asegura que no se devuelva una conexión inválida
         }
+
         return conexion;
     }
 
