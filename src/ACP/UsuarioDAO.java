@@ -44,7 +44,6 @@ public class UsuarioDAO implements Serializable {
         return null;
     }
 
-
     // Devuelve todos los usuarios (lista)
     public static List<Usuario> obtenerUsuarios() {
         return cargarUsuarios();

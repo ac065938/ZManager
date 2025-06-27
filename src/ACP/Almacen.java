@@ -35,6 +35,8 @@ public class Almacen extends JFrame {
 
 
 
+
+
     public Almacen() {
         setTitle("ZManager 2.0 - Almacén");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -320,6 +322,8 @@ public class Almacen extends JFrame {
                 this.dispose(); // Cierra la ventana actual
                 MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
             }
+            
+            
         });
         menuBar.add(cerrarSesionBtn);
 

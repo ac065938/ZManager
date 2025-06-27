@@ -14,6 +14,11 @@ public class Ventas extends JFrame {
     private JLabel estado;
     private JTable tabla;
     private DefaultTableModel modeloTabla;
+    private JButton Almacenbtn;
+    private JButton adminBtn;
+    private JButton configBtn;
+    private JButton ventasBtn;
+    private JButton cerrarSesionBtn;
 
     public Ventas() {
         setTitle("ZManager 2.0 - Ventas");
@@ -95,6 +100,16 @@ public class Ventas extends JFrame {
             }
         });
         menuBar.add(cerrarSesionBtn);
+        
+        if ("Vendedor".equalsIgnoreCase(Session.perfil)) {
+            adminBtn.setVisible(false);
+            configBtn.setVisible(false);
+            Almacenbtn.setVisible(false);
+            seleccionarBD.setVisible(true); // Este sí debe verse
+            // Opción 1: Mostrar directamente Ventas y cerrar Almacén
+            // this.dispose();
+            // Ventas.mostrar();
+        }
 
         //---------- Barra_tipo_Ribbon ----------
         JToolBar ribbon = new JToolBar();

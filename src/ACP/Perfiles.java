@@ -1,28 +1,39 @@
 package ACP;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.border.LineBorder;
-
-import com.mysql.cj.util.Util;
 
 public class Perfiles extends JDialog {
+    private JTable tablaUsuarios;
+    private DefaultTableModel modeloTabla;
+
     public Perfiles(JFrame parent) {
         super(parent, "Perfiles de usuario", true);
-        setSize(760, 310);
+        setSize(800, 400);
         setLocationRelativeTo(parent);
 
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png"));
         setIconImage(icon);
 
+        JTabbedPane tabs = new JTabbedPane();
+
+        JPanel formularioPanel = crearFormularioPanel();
+        JPanel listaPanel = crearListaUsuariosPanel();
+
+        tabs.addTab("Formulario", formularioPanel);
+        tabs.addTab("Usuarios Registrados", listaPanel);
+
+        getContentPane().add(tabs);
+    }
+
+    private JPanel crearFormularioPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        JLabel title = new JLabel("Perfiles de usuario", JLabel.LEFT);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        panel.add(title, BorderLayout.NORTH);
 
         GridBagLayout gbl = new GridBagLayout();
         gbl.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
@@ -35,8 +46,8 @@ public class Perfiles extends JDialog {
         JTextField txtVendedorNum = new JTextField("0");
         JTextField txtNombre = new JTextField();
         JComboBox<String> cbPerfil = new JComboBox<>(new String[]{
-            "Administrador", "Gerente", "Contador", "Jefe", "Supervisor",
-            "Asistente", "Vendedor", "Cajera", "Empacador", "Telefonista"
+                "Administrador", "Gerente", "Contador", "Jefe", "Supervisor",
+                "Asistente", "Vendedor", "Cajera", "Empacador", "Telefonista"
         });
         cbPerfil.setSelectedItem("Administrador");
         JTextField txtApellidoPaterno = new JTextField();
@@ -49,7 +60,6 @@ public class Perfiles extends JDialog {
         // Fila 0
         content.add(new JLabel("Usuario:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtUsuario, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-
         content.add(new JLabel("Vendedor Num:"), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtVendedorNum, new GridBagConstraints(5, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
@@ -82,7 +92,7 @@ public class Perfiles extends JDialog {
         JButton btnActualizar = new JButton("Actualizar Usuario");
         content.add(btnActualizar, new GridBagConstraints(5, 6, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, insets, 0, 0));
 
-        btnActualizar.addActionListener((ActionEvent e) -> {
+        btnActualizar.addActionListener(e -> {
             try {
                 Usuario usuario = new Usuario();
                 usuario.setUsuario(txtUsuario.getText().trim());
@@ -99,25 +109,83 @@ public class Perfiles extends JDialog {
                 UsuarioDAO.guardarUsuario(usuario);
 
                 JOptionPane.showMessageDialog(this, "Usuario guardado correctamente");
-                dispose();
+                actualizarTablaUsuarios();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error al guardar: " + ex.getMessage());
             }
         });
 
-        getContentPane().add(panel);
         panel.add(content, BorderLayout.CENTER);
+        return panel;
+    }
 
-        // Cargar usuarios existentes al combo
-        //    try {
-        	//  List<Usuario> usuarios = UsuarioDAO.cargarUsuarios();
-        	// for (Usuario u : usuarios) {
-        	//      cbUsuarios.addItem(u.getUsuario());
-        	//   }
-        	//  } catch (Exception e) {
-        	//      e.printStackTrace();
-        	//  }
+    private JPanel crearListaUsuariosPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        modeloTabla = new DefaultTableModel(new Object[]{"Usuario", "Nombre", "Perfil", "Activo"}, 0);
+        tablaUsuarios = new JTable(modeloTabla);
+        JScrollPane scrollPane = new JScrollPane(tablaUsuarios);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        JPanel acciones = new JPanel();
+        JButton btnEliminar = new JButton("Eliminar seleccionado");
+        JButton btnEditar = new JButton("Editar seleccionado");
+        acciones.add(btnEditar);
+        acciones.add(btnEliminar);
+
+        btnEliminar.addActionListener(e -> eliminarUsuarioSeleccionado());
+        btnEditar.addActionListener(e -> cargarUsuarioSeleccionadoEnFormulario());
+
+        panel.add(acciones, BorderLayout.SOUTH);
+        actualizarTablaUsuarios();
+        return panel;
+    }
+
+    private void actualizarTablaUsuarios() {
+        modeloTabla.setRowCount(0);
+        for (Usuario u : UsuarioDAO.obtenerUsuarios()) {
+            modeloTabla.addRow(new Object[]{u.getUsuario(), u.getNombre(), u.getPerfil(), u.isActivo()});
+        }
+    }
+
+    private void eliminarUsuarioSeleccionado() {
+        int fila = tablaUsuarios.getSelectedRow();
+        if (fila >= 0) {
+            String usuario = (String) modeloTabla.getValueAt(fila, 0);
+
+            int opcion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro de eliminar al usuario \"" + usuario + "\"?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                List<Usuario> usuarios = UsuarioDAO.obtenerUsuarios();
+                usuarios.removeIf(u -> {
+                    String actual = u.getUsuario();
+                    return actual != null && actual.equalsIgnoreCase(usuario);
+                });
+                UsuarioDAO.guardarUsuarios(usuarios);
+                actualizarTablaUsuarios();
+
+                JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecciona un usuario para eliminar.");
+        }
+    }
+
+
+    private void cargarUsuarioSeleccionadoEnFormulario() {
+        int fila = tablaUsuarios.getSelectedRow();
+        if (fila >= 0) {
+            String usuario = (String) modeloTabla.getValueAt(fila, 0);
+            Usuario u = UsuarioDAO.obtenerUsuarioPorNombre(usuario);
+            if (u != null) {
+                JOptionPane.showMessageDialog(this, "Cambia a la pestaña de Formulario y edita los datos.");
+            }
+        }
     }
 
     public static void mostrar(JFrame parent) {
