@@ -12,6 +12,18 @@ public class Perfiles extends JDialog {
     private JTable tablaUsuarios;
     private DefaultTableModel modeloTabla;
 
+    private JTextField txtUsuario;
+    private JTextField txtVendedorNum;
+    private JTextField txtNombre;
+    private JComboBox<String> cbPerfil;
+    private JTextField txtApellidoPaterno;
+    private JTextField txtApellidoMaterno;
+    private JTextField txtEmail;
+    private JTextField txtClave;
+    private JTextField txtApodo;
+    private JCheckBox chkActivo;
+    private JTabbedPane tabs;
+
     public Perfiles(JFrame parent) {
         super(parent, "Perfiles de usuario", true);
         setSize(800, 400);
@@ -20,7 +32,7 @@ public class Perfiles extends JDialog {
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png"));
         setIconImage(icon);
 
-        JTabbedPane tabs = new JTabbedPane();
+        tabs = new JTabbedPane();
 
         JPanel formularioPanel = crearFormularioPanel();
         JPanel listaPanel = crearListaUsuariosPanel();
@@ -30,6 +42,22 @@ public class Perfiles extends JDialog {
 
         getContentPane().add(tabs);
     }
+    
+    private void limpiarFormulario(JTextField txtUsuario, JTextField txtVendedorNum, JTextField txtNombre,
+            JTextField txtApellidoPaterno, JTextField txtApellidoMaterno, JTextField txtEmail,
+            JTextField txtClave, JTextField txtApodo, JCheckBox chkActivo, JComboBox<String> cbPerfil) {
+txtUsuario.setText("");
+txtVendedorNum.setText("0");
+txtNombre.setText("");
+txtApellidoPaterno.setText("");
+txtApellidoMaterno.setText("");
+txtEmail.setText("");
+txtClave.setText("");
+txtApodo.setText("");
+chkActivo.setSelected(false);
+cbPerfil.setSelectedItem("Administrador");
+}
+
 
     private JPanel crearFormularioPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
@@ -42,52 +70,45 @@ public class Perfiles extends JDialog {
 
         Insets insets = new Insets(5, 5, 5, 5);
 
-        JTextField txtUsuario = new JTextField();
-        JTextField txtVendedorNum = new JTextField("0");
-        JTextField txtNombre = new JTextField();
-        JComboBox<String> cbPerfil = new JComboBox<>(new String[]{
+        txtUsuario = new JTextField();
+        txtVendedorNum = new JTextField("0");
+        txtNombre = new JTextField();
+        cbPerfil = new JComboBox<>(new String[]{
                 "Administrador", "Gerente", "Contador", "Jefe", "Supervisor",
                 "Asistente", "Vendedor", "Cajera", "Empacador", "Telefonista"
         });
         cbPerfil.setSelectedItem("Administrador");
-        JTextField txtApellidoPaterno = new JTextField();
-        JTextField txtApellidoMaterno = new JTextField();
-        JTextField txtEmail = new JTextField();
-        JTextField txtClave = new JTextField();
-        JTextField txtApodo = new JTextField();
-        JCheckBox chkActivo = new JCheckBox("Activo");
+        txtApellidoPaterno = new JTextField();
+        txtApellidoMaterno = new JTextField();
+        txtEmail = new JTextField();
+        txtClave = new JTextField();
+        txtApodo = new JTextField();
+        chkActivo = new JCheckBox("Activo");
 
-        // Fila 0
         content.add(new JLabel("Usuario:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtUsuario, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(new JLabel("Vendedor Num:"), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtVendedorNum, new GridBagConstraints(5, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-        // Fila 1
         content.add(new JLabel("Nombre(s):"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtNombre, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(new JLabel("Perfil:"), new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(cbPerfil, new GridBagConstraints(5, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-        // Fila 2
         content.add(new JLabel("Apellido Paterno:"), new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtApellidoPaterno, new GridBagConstraints(1, 2, 5, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-        // Fila 3
         content.add(new JLabel("Apellido Materno:"), new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtApellidoMaterno, new GridBagConstraints(1, 3, 5, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-        // Fila 4
         content.add(new JLabel("Email:"), new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtEmail, new GridBagConstraints(1, 4, 5, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-        // Fila 5
         content.add(new JLabel("Clave:"), new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, insets, 0, 0));
         content.add(txtClave, new GridBagConstraints(1, 5, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(new JLabel("Apodo:"), new GridBagConstraints(4, 5, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
         content.add(txtApodo, new GridBagConstraints(5, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0));
 
-        // Fila 6
         content.add(chkActivo, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, insets, 0, 0));
         JButton btnActualizar = new JButton("Actualizar Usuario");
         content.add(btnActualizar, new GridBagConstraints(5, 6, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, insets, 0, 0));
@@ -110,6 +131,11 @@ public class Perfiles extends JDialog {
 
                 JOptionPane.showMessageDialog(this, "Usuario guardado correctamente");
                 actualizarTablaUsuarios();
+                
+                limpiarFormulario(txtUsuario, txtVendedorNum, txtNombre, txtApellidoPaterno, txtApellidoMaterno,
+                        txtEmail, txtClave, txtApodo, chkActivo, cbPerfil);
+
+                
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error al guardar: " + ex.getMessage());
@@ -176,15 +202,26 @@ public class Perfiles extends JDialog {
         }
     }
 
-
     private void cargarUsuarioSeleccionadoEnFormulario() {
         int fila = tablaUsuarios.getSelectedRow();
         if (fila >= 0) {
             String usuario = (String) modeloTabla.getValueAt(fila, 0);
             Usuario u = UsuarioDAO.obtenerUsuarioPorNombre(usuario);
             if (u != null) {
-                JOptionPane.showMessageDialog(this, "Cambia a la pestaña de Formulario y edita los datos.");
+                txtUsuario.setText(u.getUsuario());
+                txtNombre.setText(u.getNombre());
+                txtApellidoPaterno.setText(u.getApellidoPaterno());
+                txtApellidoMaterno.setText(u.getApellidoMaterno());
+                txtEmail.setText(u.getEmail());
+                txtClave.setText("");
+                txtApodo.setText(u.getApodo());
+                cbPerfil.setSelectedItem(u.getPerfil());
+                txtVendedorNum.setText(String.valueOf(u.getVendedorNum()));
+                chkActivo.setSelected(u.isActivo());
+                tabs.setSelectedIndex(0);
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecciona un usuario para editar.");
         }
     }
 

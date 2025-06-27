@@ -155,14 +155,12 @@ public class Login extends JFrame {
             eliminarUsuarioRecordado();
         }
 
-     // Redirección según el perfil
         if ("Vendedor".equalsIgnoreCase(Session.perfil)) {
             Ventas.mostrar();
         } else {
             Almacen.mostrar();
         }
         dispose();
-        
     }
 
     private void guardarUsuarioRecordado(String usuario) {
