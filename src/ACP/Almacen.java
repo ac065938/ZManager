@@ -435,7 +435,7 @@ public class Almacen extends JFrame {
             filtros.add("%" + descripcionFiltro.trim() + "%");
             filtros.add("%" + descripcionFiltro.trim() + "%");
         }
-
+        
         if (soloConDescuento) {
             sql.append(" AND descto > 0");
         }
