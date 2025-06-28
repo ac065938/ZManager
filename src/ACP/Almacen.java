@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.FileOutputStream;
@@ -13,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.ArrayList;
-
 
 // Importar_Apache POI
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -31,11 +31,6 @@ public class Almacen extends JFrame {
     private String ultimoSkuFiltro = "";
     private String ultimoFiltroTexto = "";
     private String ultimoCaracteristicas = "";
-
-
-
-
-
 
     public Almacen() {
         setTitle("ZManager 2.0 - Almacén");
@@ -226,8 +221,6 @@ public class Almacen extends JFrame {
             );
         });
 
-
-
         accionesPanel.add(readFileButton);
         accionesPanel.add(printLabelButton);
         accionesPanel.add(clearRecordsButton);
@@ -240,8 +233,31 @@ public class Almacen extends JFrame {
         String[] columnNames = {
             "Código", "Descripción", "Línea", "Precio", "Ventas", "Almacen", "Escaner", "Medida", "Descto", "Descont"
         };
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         table = new JTable(tableModel);
+        
+     // Permitir copiar con Ctrl+C
+        table.getInputMap().put(KeyStroke.getKeyStroke("control C"), "copy");
+        table.getActionMap().put("copy", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                int row = table.getSelectedRow();
+                int col = table.getSelectedColumn();
+                if (row >= 0 && col >= 0) {
+                    Object value = table.getValueAt(row, col);
+                    StringSelection selection = new StringSelection(value.toString());
+                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+                }
+            }
+        });
+
+        
         JScrollPane scrollPane = new JScrollPane(table);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
@@ -323,10 +339,8 @@ public class Almacen extends JFrame {
                 MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
             }
             
-            
         });
         menuBar.add(cerrarSesionBtn);
-
 
         // Crea el contenedor vertical
         JPanel contenedorSuperior = new JPanel();
@@ -343,7 +357,7 @@ public class Almacen extends JFrame {
         reloj.setHorizontalAlignment(SwingConstants.LEFT);
         panelReloj.add(reloj, BorderLayout.WEST);
 
-        // Agrega reloj y luego el ribbon original (el que ya contenía tus botones y estilos)
+        // Agrega reloj y luego el ribbon original (el que ya contenía botones y estilos)
         contenedorSuperior.add(panelReloj);
         contenedorSuperior.add(ribbon); 
 
@@ -396,7 +410,6 @@ public class Almacen extends JFrame {
             estadoBD.setForeground(Color.WHITE);
         }
     }
-
     
     private void cargarProductosDesdeBD(String codigoFiltro, String textoFiltro, String descripcionFiltro, boolean soloConDescuento, boolean ocultarDescontinuados) {
         DefaultTableModel modelo = (DefaultTableModel) table.getModel();
@@ -430,7 +443,6 @@ public class Almacen extends JFrame {
         if (ocultarDescontinuados) {
             sql.append(" AND descont = 0");
         }
-
 
         try (PreparedStatement stmt = DBConnection.conectar().prepareStatement(sql.toString())) {
             for (int i = 0; i < filtros.size(); i++) {
@@ -467,7 +479,6 @@ public class Almacen extends JFrame {
         }
     }
 
-
     private void buscarProducto(String sku, String filtro, String caracteristicas) {
         // Guardar los filtros usados
         ultimoSkuFiltro = sku;
@@ -479,7 +490,6 @@ public class Almacen extends JFrame {
                 caracteristicas,
                 mostrarConDescuento,
                 ocultarDescontinuados
-
         );
     }
 

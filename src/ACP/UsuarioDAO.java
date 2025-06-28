@@ -83,6 +83,4 @@ public class UsuarioDAO implements Serializable {
         guardarUsuarios(usuarios);
     }
 
-    
-    
 }

@@ -19,6 +19,9 @@ public class Ventas extends JFrame {
     private JButton configBtn;
     private JButton ventasBtn;
     private JButton cerrarSesionBtn;
+    private boolean filtrarStock = false;
+    private boolean filtrarDescuento = false;
+
 
     public Ventas() {
         setTitle("ZManager 2.0 - Ventas");
@@ -166,24 +169,35 @@ public class Ventas extends JFrame {
 
         ribbon.add(clienteProductoPanel);
 
-        JCheckBox chckbxNewCheckBox = new JCheckBox("Limpiar antes de cargar información");
-        chckbxNewCheckBox.setBackground(new Color(255, 255, 255));
-        chckbxNewCheckBox.setSelected(true);
-        clienteProductoPanel.add(chckbxNewCheckBox, BorderLayout.SOUTH);
-
         JPanel filtrosPanel = new JPanel(new GridLayout(2, 1));
         filtrosPanel.setBackground(new Color(255, 255, 255));
         filtrosPanel.setPreferredSize(new Dimension(175, 105));
         filtrosPanel.setBorder(BorderFactory.createTitledBorder("Filtros"));
 
-        JCheckBox cbStock = new JCheckBox("Solo en existencia", false);
-        cbStock.setBackground(new Color(255, 255, 255));
-        JCheckBox cbDescuentos = new JCheckBox("Mostrar con descuento");
-        cbDescuentos.setBackground(new Color(255, 255, 255));
+        JButton btnStock = new JButton("Ocultar descontinuados");
+        btnStock.setFocusPainted(false);
+        btnStock.setBackground(new Color(240, 240, 240));
 
-        filtrosPanel.add(cbStock);
-        filtrosPanel.add(cbDescuentos);
+        JButton btnDescuento = new JButton("Solo descuentos");
+        btnDescuento.setFocusPainted(false);
+        btnDescuento.setBackground(new Color(240, 240, 240));
 
+        btnStock.addActionListener(e -> {
+            filtrarStock = !filtrarStock;
+            btnStock.setBackground(filtrarStock ? new Color(144, 238, 144) : new Color(240, 240, 240));
+            aplicarFiltros();
+        });
+
+        btnDescuento.addActionListener(e -> {
+            filtrarDescuento = !filtrarDescuento;
+            btnDescuento.setBackground(filtrarDescuento ? new Color(255, 255, 153) : new Color(240, 240, 240));
+            aplicarFiltros();
+        });
+
+        
+        filtrosPanel.add(btnStock);
+        filtrosPanel.add(btnDescuento);
+        
         ribbon.add(filtrosPanel);
 
         JPanel accionesPanel = new JPanel(new FlowLayout());
@@ -275,7 +289,12 @@ public class Ventas extends JFrame {
 
     }
 
-    private void actualizarEstadoBD(JLabel estadoBD) {
+    private void aplicarFiltros() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void actualizarEstadoBD(JLabel estadoBD) {
         if (DBConnection.estaConectado()) {
             estadoBD.setText("Conectado a BD");
             estadoBD.setBackground(new Color(0, 153, 51));  // Verde
