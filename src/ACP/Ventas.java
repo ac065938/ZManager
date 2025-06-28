@@ -99,7 +99,7 @@ public class Ventas extends JFrame {
             );
             if (confirm == JOptionPane.YES_OPTION) {
                 this.dispose(); // Cierra la ventana actual
-                MainApp.mostrarLogin(); // Vuelve a ejecutar el_login_con_listener
+                MainApp.mostrarLogin(); // Vuelve_ejecutar el_login_con_listener
             }
         });
         menuBar.add(cerrarSesionBtn);
