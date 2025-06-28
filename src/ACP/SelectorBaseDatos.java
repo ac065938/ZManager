@@ -22,7 +22,7 @@ public class SelectorBaseDatos {
         if (seleccion != null) {
             baseDeDatosActual = seleccion;
             JOptionPane.showMessageDialog(parent, "Conectado a: " + baseDeDatosActual);
-            // Aquí puedes poner lógica real de conexión si es necesario
+
         }
     }
 

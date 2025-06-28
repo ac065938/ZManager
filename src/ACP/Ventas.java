@@ -98,8 +98,8 @@ public class Ventas extends JFrame {
                 JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                this.dispose(); // Cierra la ventana actual
-                MainApp.mostrarLogin(); // Vuelve_ejecutar el_login_con_listener
+                this.dispose(); 
+                MainApp.mostrarLogin(); 
             }
         });
         menuBar.add(cerrarSesionBtn);
@@ -108,10 +108,7 @@ public class Ventas extends JFrame {
             adminBtn.setVisible(false);
             configBtn.setVisible(false);
             Almacenbtn.setVisible(false);
-            seleccionarBD.setVisible(true); // Este sí debe verse
-            // Opción 1: Mostrar directamente Ventas y cerrar Almacén
-            // this.dispose();
-            // Ventas.mostrar();
+            seleccionarBD.setVisible(true); 
         }
 
         //---------- Barra_tipo_Ribbon ----------
@@ -260,17 +257,14 @@ public class Ventas extends JFrame {
         estadoBD.setOpaque(true);
         estadoBD.setHorizontalAlignment(SwingConstants.CENTER);
         estadoBD.setPreferredSize(new Dimension(200, 30));
-        actualizarEstadoBD(estadoBD); // <-- actualiza_colores_y_texto
+        actualizarEstadoBD(estadoBD); 
         getContentPane().add(estadoBD, BorderLayout.SOUTH);
 
-        // Timer para actualizar automáticamente cada 10s
         new javax.swing.Timer(10000, e -> actualizarEstadoBD(estadoBD)).start();
         
-        // Crea el contenedor vertical
         JPanel contenedorSuperior = new JPanel();
         contenedorSuperior.setLayout(new BoxLayout(contenedorSuperior, BoxLayout.Y_AXIS));
 
-        // Panel con el reloj
         JPanel panelReloj = new JPanel(new BorderLayout());
         panelReloj.setBackground(Color.WHITE);
         panelReloj.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
@@ -281,10 +275,8 @@ public class Ventas extends JFrame {
         reloj.setHorizontalAlignment(SwingConstants.LEFT);
         panelReloj.add(reloj, BorderLayout.WEST);
 
-        // Agrega reloj y luego el ribbon original (el que ya contenía tus botones y estilos)
         contenedorSuperior.add(panelReloj);
-        contenedorSuperior.add(ribbon); // Asegúrate que este contenga todos tus botones
-
+        contenedorSuperior.add(ribbon); 
         getContentPane().add(contenedorSuperior, BorderLayout.NORTH);
 
     }
@@ -297,11 +289,11 @@ public class Ventas extends JFrame {
 	private void actualizarEstadoBD(JLabel estadoBD) {
         if (DBConnection.estaConectado()) {
             estadoBD.setText("Conectado a BD");
-            estadoBD.setBackground(new Color(0, 153, 51));  // Verde
+            estadoBD.setBackground(new Color(0, 153, 51)); 
             estadoBD.setForeground(Color.WHITE);
         } else {
             estadoBD.setText("Sin conexión a BD");
-            estadoBD.setBackground(new Color(204, 0, 0));   // Rojo
+            estadoBD.setBackground(new Color(204, 0, 0));  
             estadoBD.setForeground(Color.WHITE);
         }
     }

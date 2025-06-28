@@ -13,18 +13,15 @@ public class Generar_Facturas extends JDialog {
 
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/LOGOZM.png")));
 
-        // Panel principal con GridBagLayout para un control preciso del diseño
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBackground(Color.WHITE);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         
-        // Borde vacío para un poco de espacio alrededor de los componentes
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        // Restricciones de GridBagLayout base
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8); // Espaciado entre componentes
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Los componentes se expanden horizontalmente
+        gbc.insets = new Insets(8, 8, 8, 8); 
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
 
         // Título
         JLabel titleLabel = new JLabel("Datos de la Factura");
@@ -48,7 +45,6 @@ public class Generar_Facturas extends JDialog {
         gbcSeparator.insets = new Insets(0, 0, 15, 0);
         contentPanel.add(separator, gbcSeparator);
 
-        // Fila actual para la adición de componentes
         int currentRow = 2; 
 
         // Serie y Folio
@@ -154,8 +150,8 @@ public class Generar_Facturas extends JDialog {
         
         //Crear un JPanel para los botones
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Espaciado horizontal y vertical
-        buttonPanel.setBackground(Color.WHITE); // Fondo blanco
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); 
+        buttonPanel.setBackground(Color.WHITE); 
 
         //---------------------- BOTÓN: GUARDAR ----------------------
         JButton guardarBtn = new JButton("Guardar");

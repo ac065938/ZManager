@@ -153,14 +153,13 @@ public class FormularioCliente extends JDialog {
     private JTextField createStyledTextField(String placeholder) {
         JTextField field = new JTextField(placeholder);
         field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        field.setForeground(Color.GRAY); // Texto inicial en gris
+        field.setForeground(Color.GRAY); 
 
         field.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
             BorderFactory.createEmptyBorder(5, 8, 5, 8)
         ));
 
-        // Guardar el placeholder como variable final
         final String defaultText = placeholder;
 
         field.addFocusListener(new java.awt.event.FocusAdapter() {

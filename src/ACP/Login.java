@@ -103,28 +103,23 @@ public class Login extends JFrame {
         recordarUsuarioCheck.setHorizontalAlignment(SwingConstants.CENTER);
         formPanel.add(recordarUsuarioCheck, gbc);
 
-     // Botón ingresar en panel independiente para evitar afectar el layout
         gbc.gridy++;
         JPanel botonPanel = new JPanel();
         botonPanel.setBackground(Color.WHITE);
-        botonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0)); // evita márgenes
+        botonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0)); 
 
         loginButton = new RoundedButton("Ingresar", new ImageIcon(getClass().getResource("/login.png")));
-        loginButton.setPreferredSize(new Dimension(150, 40)); // tamaño libre
+        loginButton.setPreferredSize(new Dimension(150, 40)); 
         botonPanel.add(loginButton);
 
         formPanel.add(botonPanel, gbc);
 
-
-        // Añadir panel al principal
         gbc.gridy = 0;
         gbc.gridx = 0;
         mainPanel.add(formPanel, gbc);
 
-        // Eventos
         loginButton.addActionListener(e -> autenticarUsuario());
 
-        // Cargar datos
         cargarUsuariosDesdeSistema();
         cargarUsuarioRecordado();
 
@@ -245,7 +240,7 @@ public class Login extends JFrame {
             setBackground(new Color(0x0077B6));
             setFont(new Font("Segoe UI", Font.BOLD, 13));
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // compacta el botón
+            setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); 
         }
 
         @Override

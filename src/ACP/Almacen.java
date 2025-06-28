@@ -58,7 +58,6 @@ public class Almacen extends JFrame {
 
         JPanel filaSKUProducto = new JPanel(new GridLayout(1, 2, 5, 0));
 
-        // Primero declarar los campos
         campoSkuProducto = new JTextField("%SKU%");
         campoFiltroProducto = new JTextField("%Filtro%");
         campoCaracteristicas = new JTextField("Caracteristicas");
@@ -202,12 +201,10 @@ public class Almacen extends JFrame {
 
             btnConDescuento.setText(mostrarConDescuento ? "Todos los productos" : "Solo descuentos");
 
-            // Si no hay filtros previos, usar los actuales (por primera vez)
             if (ultimoSkuFiltro.isEmpty()) ultimoSkuFiltro = campoSkuProducto.getText().trim();
             if (ultimoFiltroTexto.isEmpty()) ultimoFiltroTexto = campoFiltroProducto.getText().trim();
             if (ultimoCaracteristicas.isEmpty()) ultimoCaracteristicas = campoCaracteristicas.getText().trim();
 
-            // Lógica para limpiar si los filtros tienen texto por defecto
             if (ultimoSkuFiltro.equalsIgnoreCase("%SKU%")) ultimoSkuFiltro = "";
             if (ultimoFiltroTexto.equalsIgnoreCase("%Filtro%")) ultimoFiltroTexto = "";
             if (ultimoCaracteristicas.equalsIgnoreCase("Caracteristicas")) ultimoCaracteristicas = "";
@@ -335,18 +332,18 @@ public class Almacen extends JFrame {
                 JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                this.dispose(); // Cierra la ventana actual
-                MainApp.mostrarLogin(); // Vuelve a ejecutar el login con listener
+                this.dispose(); 
+                MainApp.mostrarLogin(); 
             }
             
         });
         menuBar.add(cerrarSesionBtn);
 
-        // Crea el contenedor vertical
+
         JPanel contenedorSuperior = new JPanel();
         contenedorSuperior.setLayout(new BoxLayout(contenedorSuperior, BoxLayout.Y_AXIS));
 
-        // Panel con el reloj
+
         JPanel panelReloj = new JPanel(new BorderLayout());
         panelReloj.setBackground(Color.WHITE);
         panelReloj.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
@@ -357,7 +354,7 @@ public class Almacen extends JFrame {
         reloj.setHorizontalAlignment(SwingConstants.LEFT);
         panelReloj.add(reloj, BorderLayout.WEST);
 
-        // Agrega reloj y luego el ribbon original (el que ya contenía botones y estilos)
+
         contenedorSuperior.add(panelReloj);
         contenedorSuperior.add(ribbon); 
 
@@ -480,7 +477,7 @@ public class Almacen extends JFrame {
     }
 
     private void buscarProducto(String sku, String filtro, String caracteristicas) {
-        // Guardar los filtros usados
+
         ultimoSkuFiltro = sku;
         ultimoFiltroTexto = filtro;
         ultimoCaracteristicas = caracteristicas;

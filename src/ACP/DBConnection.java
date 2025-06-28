@@ -30,7 +30,7 @@ public class DBConnection {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            conexion = null; // Asegura que no se devuelva una conexión inválida
+            conexion = null;
         }
 
         return conexion;
